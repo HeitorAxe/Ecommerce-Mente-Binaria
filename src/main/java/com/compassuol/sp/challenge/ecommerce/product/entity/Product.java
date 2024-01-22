@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -13,7 +12,6 @@ import java.util.Objects;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Entity
 @Table(name = "products")
-@EntityListeners(AuditingEntityListener.class)
 public class Product implements Serializable {
 
     @Id
