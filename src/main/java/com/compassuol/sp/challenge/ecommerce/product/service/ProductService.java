@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProductService {
@@ -21,7 +23,14 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductProjection> getAll(Pageable pageable){
+    public Page<ProductProjection> getAllAsPage(Pageable pageable){
         return productRepository.findAllAsProjection(pageable);
     }
+
+    @Transactional(readOnly = true)
+    public List<Product> getAll(){
+        return productRepository.findAll();
+    }
 }
+
+
