@@ -1,5 +1,6 @@
 package com.compassuol.sp.challenge.ecommerce.product.controller;
 
+import com.compassuol.sp.challenge.ecommerce.exception.ErrorMessage;
 import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductCreateDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
