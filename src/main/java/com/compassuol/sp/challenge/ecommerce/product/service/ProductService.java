@@ -31,7 +31,8 @@ public class ProductService {
 
     @Transactional
     public void remove(Long id) {
-        productRepository.deleteById(id);
+        Product product = getById(id);
+        productRepository.deleteById(product.getId());
     }
 
     @Transactional(readOnly = true)
