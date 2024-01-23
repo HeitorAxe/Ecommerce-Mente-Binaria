@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/products")
@@ -29,6 +30,24 @@ public class ProductController {
     public ResponseEntity<Product> createProduct(@Valid @RequestBody Product newProduct){
         Product product = productService.createProduct(newProduct);
         return new ResponseEntity<>(product, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateProductId(@PathVariable ("id") Long id, @RequestBody Product product){
+        Optional<Product> product1 = productService.buscarPorId(id);
+
+        if(product1.isPresent()){
+            Product existingPorduct = product1.get();
+            existingPorduct.setName(product.getName());
+            existingPorduct.setDescription(product.getDescription());
+            existingPorduct.setPrice(product.getPrice());
+
+            productService.salvarProduto(existingPorduct);
+
+            return ResponseEntity.status(HttpStatus.OK).body(existingPorduct);
+        }else
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
+
     }
 
     @GetMapping("/page")
