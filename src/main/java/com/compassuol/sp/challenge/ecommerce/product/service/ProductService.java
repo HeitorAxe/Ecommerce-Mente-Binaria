@@ -26,15 +26,13 @@ public class ProductService {
     public void remove(Long id) {
         productRepository.deleteById(id);
     }
-<<<<<<< HEAD
+
     @Transactional(readOnly = true)
-    public Product buscarPorId(Long id){
+    public Product getById(Long id) {
         return productRepository.findById(id).orElseThrow(
-                ()->new RuntimeException("Produto não encontrado")
+                () -> new RuntimeException("Produto não encontrado")
         );
-
-
-=======
+    }    
 
     @Transactional(readOnly = true)
     public Page<ProductProjection> getAllAsPage(Pageable pageable){
@@ -44,7 +42,6 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<Product> getAll(){
         return productRepository.findAll();
->>>>>>> 27d15489f418a4a3e4955b5ec84c7f68f984659c
     }
 }
 

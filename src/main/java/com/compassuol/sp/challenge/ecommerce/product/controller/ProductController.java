@@ -51,13 +51,11 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-<<<<<<< HEAD
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> getById(@PathVariable Long id) {
-        Product product = productService.buscarPorId(id);
-        return ResponseEntity.ok(ProductMapper.toDto(product));
+        Product product = productService.getById(id);
+        return ResponseEntity.ok(ProductMapper.toDTO(product));
     }
-=======
->>>>>>> 27d15489f418a4a3e4955b5ec84c7f68f984659c
+
 }
