@@ -28,11 +28,11 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Product buscarPorId(Long id) {
+    public Product getById(Long id) {
         return productRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Produto não encontrado")
         );
-    }
+    }    
 
     @Transactional(readOnly = true)
     public Page<ProductProjection> getAllAsPage(Pageable pageable){

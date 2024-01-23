@@ -1,6 +1,7 @@
 package com.compassuol.sp.challenge.ecommerce.product.controller;
 
 import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
+import com.compassuol.sp.challenge.ecommerce.product.dto.ProductCreateDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.mapper.PageableMapper;
 import com.compassuol.sp.challenge.ecommerce.product.dto.mapper.ProductMapper;
@@ -42,9 +43,9 @@ public class ProductController {
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
             })
     @PostMapping
-    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product newProduct){
-        Product product = productService.createProduct(newProduct);
-        return new ResponseEntity<>(product, HttpStatus.CREATED);
+    public ResponseEntity<ProductResponseDTO> createProduct(@Valid @RequestBody ProductCreateDTO createDto){
+        Product product = productService.createProduct(ProductMapper.toProduct(createDto));
+        return  ResponseEntity.status(HttpStatus.CREATED).body(ProductMapper.toDTO(product));
     }
 
     @Operation(summary = "Get all products as pageable", description = "Retrieve products as pageable",
@@ -63,9 +64,7 @@ public class ProductController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "List all registered products",
                             content = @Content(mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = ProductResponseDTO.class)))),
-                    @ApiResponse(responseCode = "403", description = "User without permission to access this resource",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+                                    array = @ArraySchema(schema = @Schema(implementation = ProductResponseDTO.class))))
             })
     @GetMapping
     public ResponseEntity<List<ProductResponseDTO>> getAll(){
@@ -78,8 +77,6 @@ public class ProductController {
     @Operation(summary = "Delete a product by ID", description = "No authentication required",
             responses = {
                     @ApiResponse(responseCode = "204", description = "Product deleted successfully"),
-                    @ApiResponse(responseCode = "403", description = "User without permission to access this resource",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
                     @ApiResponse(responseCode = "404", description = "Product not found",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
             })
@@ -89,20 +86,18 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-
     @Operation(summary = "Retrieve a product by id", description = "No authentication required",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Resource retrieved successfully",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponseDTO.class))),
-                    @ApiResponse(responseCode = "403", description = "User without permission to access this resource",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponseDTO.class))),                   
                     @ApiResponse(responseCode = "404", description = "Resource not found",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
             })
 
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> getById(@PathVariable Long id) {
-        Product product = productService.buscarPorId(id);
+        Product product = productService.getById(id);
         return ResponseEntity.ok(ProductMapper.toDTO(product));
     }
 
