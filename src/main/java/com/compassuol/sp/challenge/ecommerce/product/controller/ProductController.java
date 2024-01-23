@@ -1,6 +1,7 @@
 package com.compassuol.sp.challenge.ecommerce.product.controller;
 
 import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
+import com.compassuol.sp.challenge.ecommerce.product.dto.ProductCreateDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.mapper.PageableMapper;
 import com.compassuol.sp.challenge.ecommerce.product.dto.mapper.ProductMapper;
@@ -26,9 +27,9 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product newProduct){
-        Product product = productService.createProduct(newProduct);
-        return new ResponseEntity<>(product, HttpStatus.CREATED);
+    public ResponseEntity<ProductResponseDTO> createProduct(@Valid @RequestBody ProductCreateDTO createDto){
+        Product product = productService.createProduct(ProductMapper.toProduct(createDto));
+        return  ResponseEntity.status(HttpStatus.CREATED).body(ProductMapper.toDTO(product));
     }
 
     @GetMapping("/page")
