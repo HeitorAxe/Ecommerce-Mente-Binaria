@@ -12,13 +12,8 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-
     @Transactional
     public Product createProduct(Product newProduct) {
         return productRepository.save(newProduct);
-    }
-
-    public void remove(Long id) {
-        productRepository.deleteById(id);
     }
 }
