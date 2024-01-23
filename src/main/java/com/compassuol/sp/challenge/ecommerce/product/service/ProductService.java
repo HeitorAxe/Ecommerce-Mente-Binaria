@@ -3,6 +3,7 @@ package com.compassuol.sp.challenge.ecommerce.product.service;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
 import com.compassuol.sp.challenge.ecommerce.product.repository.projection.ProductProjection;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     public Product getById(Long id) {
         return productRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Produto não encontrado")
+                () -> new EntityNotFoundException(String.format("Produto de id %s não encontrado", id))
         );
     }    
 
