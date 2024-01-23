@@ -27,4 +27,6 @@ public class ProductController {
         productService.remove(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }
