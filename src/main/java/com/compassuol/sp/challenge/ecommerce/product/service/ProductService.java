@@ -22,6 +22,11 @@ public class ProductService {
         return productRepository.save(newProduct);
     }
 
+    @Transactional
+    public void remove(Long id) {
+        productRepository.deleteById(id);
+    }
+
     @Transactional(readOnly = true)
     public Page<ProductProjection> getAllAsPage(Pageable pageable){
         return productRepository.findAllAsProjection(pageable);
