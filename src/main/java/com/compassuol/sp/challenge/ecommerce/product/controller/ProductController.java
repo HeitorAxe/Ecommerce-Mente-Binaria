@@ -27,4 +27,11 @@ public class ProductController {
         productService.remove(id);
         return ResponseEntity.noContent().build();
     }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponseDTO> getById(@PathVariable Long id) {
+        Product product = productService.buscarPorId(id);
+        return ResponseEntity.ok(ProductMapper.toDto(product));
+    }
 }

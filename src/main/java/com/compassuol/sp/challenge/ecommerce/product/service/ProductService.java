@@ -21,4 +21,12 @@ public class ProductService {
     public void remove(Long id) {
         productRepository.deleteById(id);
     }
+    @Transactional(readOnly = true)
+    public Product buscarPorId(Long id){
+        return productRepository.findById(id).orElseThrow(
+                ()->new RuntimeException("Produto não encontrado")
+        );
+
+
+    }
 }
