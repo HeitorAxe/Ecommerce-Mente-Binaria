@@ -1,10 +1,12 @@
 package com.compassuol.sp.challenge.ecommerce.product.service;
 
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
+import com.compassuol.sp.challenge.ecommerce.product.exception.ProductNameUniqueViolationException;
 import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
 import com.compassuol.sp.challenge.ecommerce.product.repository.projection.ProductProjection;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,11 @@ public class ProductService {
 
     @Transactional
     public Product createProduct(Product newProduct) {
-        return productRepository.save(newProduct);
+        try{
+            return productRepository.save(newProduct);
+        }catch (DataIntegrityViolationException ex){
+            throw new ProductNameUniqueViolationException(String.format("Produto de nome %s já existe", newProduct.getName()));
+        }
     }
 
     @Transactional
