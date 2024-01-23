@@ -8,6 +8,6 @@ import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import org.springframework.data.jpa.repository.Query;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    @Query("SELECT p.id as id, p.name as name FROM Product p")
+    @Query("SELECT p.id as id, p.name as name, p.description as description, p.price as price FROM Product p")
     Page<ProductProjection> findAllAsProjection(Pageable pageable);
 }
