@@ -102,6 +102,13 @@ public class ProductController {
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
             })
 
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponseDTO> getById(@PathVariable Long id) {
+        Product product = productService.getById(id);
+        return ResponseEntity.ok(ProductMapper.toDTO(product));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> updateProductId(@PathVariable ("id") Long id, @RequestBody ProductCreateDTO productDto){
         Optional<Product> product = productService.buscarPorId(id);
@@ -119,11 +126,6 @@ public class ProductController {
         }else
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
-    
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductResponseDTO> getById(@PathVariable Long id) {
-        Product product = productService.getById(id);
-        return ResponseEntity.ok(ProductMapper.toDTO(product));
-    }
+
 
 }
