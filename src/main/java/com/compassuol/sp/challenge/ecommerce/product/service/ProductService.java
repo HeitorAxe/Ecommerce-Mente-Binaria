@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -51,16 +50,6 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<Product> getAll(){
         return productRepository.findAll();
-    }
-
-
-    public Optional<Product> buscarPorId(Long id) {
-        Optional<Product> product = productRepository.findById(id);
-        return product;
-    }
-
-    public void salvarProduto(Product existingPorduct) {
-        productRepository.save(existingPorduct);
     }
 }
 
