@@ -4,6 +4,7 @@ import com.compassuol.sp.challenge.ecommerce.exception.ErrorMessage;
 import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductCreateDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
+import com.compassuol.sp.challenge.ecommerce.product.dto.UpdateProductDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.mapper.PageableMapper;
 import com.compassuol.sp.challenge.ecommerce.product.dto.mapper.ProductMapper;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
@@ -90,7 +91,7 @@ public class ProductController {
     @Operation(summary = "Retrieve a product by id", description = "No authentication required",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Resource retrieved successfully",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponseDTO.class))),                   
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponseDTO.class))),
                     @ApiResponse(responseCode = "404", description = "Resource not found",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
             })
@@ -101,5 +102,14 @@ public class ProductController {
         Product product = productService.getById(id);
         return ResponseEntity.ok(ProductMapper.toDTO(product));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductResponseDTO> updateProductId(@PathVariable ("id") Long id, @RequestBody UpdateProductDTO productDto){
+        Product product = productService.getById(id);
+        ProductMapper.updateByDto(productDto, product);
+        productService.createProduct(product);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }
