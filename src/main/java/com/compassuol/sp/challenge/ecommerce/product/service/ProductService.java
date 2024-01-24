@@ -51,6 +51,24 @@ public class ProductService {
     public List<Product> getAll(){
         return productRepository.findAll();
     }
+
+    @Transactional
+    public Product updateProduct(Long id, Product updatedProduct) {
+        checkIfProductNameExists(updatedProduct.getName(), id);
+        Product existingProduct = getById(id);
+        existingProduct.setName(updatedProduct.getName());
+        existingProduct.setPrice(updatedProduct.getPrice());
+        existingProduct.setDescription(updatedProduct.getDescription());
+
+        return productRepository.save(existingProduct);
+    }
+    private void checkIfProductNameExists(String newName, Long currentProductId) {
+        Product existingProductWithSameName = productRepository.findByNameIgnoreCase(newName);
+
+        if (existingProductWithSameName != null && !existingProductWithSameName.getId().equals(currentProductId)) {
+            throw new ProductNameUniqueViolationException(String.format("Product with name %s already exists", newName));
+        }
+    }
 }
 
 
