@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -25,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Tag(name ="Products", description = "Contains all operations to register, edit, delete, view a product.")
 @RestController
@@ -49,11 +51,16 @@ public class ProductController {
         return  ResponseEntity.status(HttpStatus.CREATED).body(ProductMapper.toDTO(product));
     }
 
+
+
+
+
     @Operation(summary = "Get all products as pageable", description = "Retrieve products as pageable",
             responses = {
                     @ApiResponse(responseCode = "200", description = "List of products retrieved successfully as pageable",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = PageableDTO.class)))
             })
+
     @GetMapping("/page")
     public ResponseEntity<PageableDTO> getAllAsPage(@PageableDefault(size = 5)Pageable pageable){
         Page<ProductProjection> projection = productService.getAllAsPage(pageable);
@@ -95,7 +102,24 @@ public class ProductController {
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
             })
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductResponseDTO> updateProductId(@PathVariable ("id") Long id, @RequestBody ProductCreateDTO productDto){
+        Optional<Product> product = productService.buscarPorId(id);
 
+        if(product.isPresent()){
+            Product existingProduct = product.get();
+
+            existingProduct.setName(productDto.getName());
+            existingProduct.setDescription(productDto.getDescription());
+            existingProduct.setPrice(productDto.getPrice());
+
+            productService.salvarProduto(existingProduct);
+
+            return ResponseEntity.status(HttpStatus.OK).body(ProductMapper.toDTO(existingProduct));
+        }else
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+    
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> getById(@PathVariable Long id) {
         Product product = productService.getById(id);
