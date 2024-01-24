@@ -9,6 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static com.compassouol.sp.challenge.ecommerce.common.ProductConstants.INVALID_PRODUCT;
 import static com.compassouol.sp.challenge.ecommerce.common.ProductConstants.PRODUCT;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,18 +25,18 @@ class ProductServiceTest {
     ProductService productService;
 
     @Mock
-    ProductRepository planetRepository;
+    ProductRepository productRepository;
 
     @Test
     void createProduct_WithValidData_ReturnProduct(){
-        when(planetRepository.save(PRODUCT)).thenReturn(PRODUCT);
+        when(productRepository.save(PRODUCT)).thenReturn(PRODUCT);
         Product sut = productService.createProduct(PRODUCT);
         assertThat(sut).isEqualTo(PRODUCT);
 
     }
     @Test
     void createProduct_WithInvalidData_ThrowsException(){
-        when(planetRepository.save(INVALID_PRODUCT)).thenThrow(RuntimeException.class);
+        when(productRepository.save(INVALID_PRODUCT)).thenThrow(RuntimeException.class);
         assertThatThrownBy(() -> productService.createProduct(INVALID_PRODUCT)).isInstanceOf(RuntimeException.class);
     }
 
@@ -60,12 +62,18 @@ class ProductServiceTest {
 
     @Test
     void  getProductById_ByNonexistentId_ReturnsEmpty() {
-        //Loude
+        when(productRepository.findById(1L)).thenReturn(Optional.empty());
+        Optional<Product> sut =productService.get(1L);
+        assertThat(sut).isEmpty();
     }
 
     @Test
     void  getProductById_ByExistentId_ReturnsProduct() {
-        //Loude
+        when(productRepository.findById(1L)).thenReturn(Optional.of(PRODUCT));
+        Optional<Product> sut =productService.get(1L);
+        assertThat(sut).isNotEmpty();
+        assertThat(sut.get()).isEqualTo(PRODUCT);
+
     }
 
     @Test
