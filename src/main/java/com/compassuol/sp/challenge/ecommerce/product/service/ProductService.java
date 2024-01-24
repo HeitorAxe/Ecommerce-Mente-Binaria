@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -70,6 +71,10 @@ public class ProductService {
         if (existingProductWithSameName != null && !existingProductWithSameName.getId().equals(currentProductId)) {
             throw new ProductNameUniqueViolationException(String.format("Product with name %s already exists", newName));
         }
+    }
+
+    public Optional<Product> get(long id) {
+        return productRepository.findById(id);
     }
 }
 
