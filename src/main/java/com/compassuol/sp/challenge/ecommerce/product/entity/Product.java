@@ -13,7 +13,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "products")
 public class Product implements Serializable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,6 +22,12 @@ public class Product implements Serializable {
     private String description;
     @Column(name = "price", nullable = false)
     private Double price;
+
+    public Product(String name, String description, Double price) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+    }
 
     @Override
     public String toString() {
