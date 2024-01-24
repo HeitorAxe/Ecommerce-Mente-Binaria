@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Default ignored files
 /shelf/
 /workspace.xml
@@ -9,12 +10,20 @@
 *.iws
 *.iml
 *.ipr
+=======
+HELP.md
+>>>>>>> a25a0c18925d96e83b3ff901e90fcb387464a4c7
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 bin
 .DS_Store
+<<<<<<< HEAD
+=======
+
+### STS ###
+>>>>>>> a25a0c18925d96e83b3ff901e90fcb387464a4c7
 .apt_generated
 .classpath
 .factorypath
@@ -22,5 +31,31 @@ bin
 .settings
 .springBeans
 .sts4-cache
+<<<<<<< HEAD
 .logs
 target
+=======
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+### Custom ###
+.logs
+target
+>>>>>>> a25a0c18925d96e83b3ff901e90fcb387464a4c7
