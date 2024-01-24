@@ -8,7 +8,7 @@ import lombok.*;
 
 @Getter
 @Setter @NoArgsConstructor @AllArgsConstructor
-public class UpdateProductDTO {
+public class ProductUpdateDTO {
 
     @NotBlank(message = "Name cannot be blank ")
     private String name;

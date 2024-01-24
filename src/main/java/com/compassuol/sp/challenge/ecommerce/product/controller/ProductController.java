@@ -4,7 +4,7 @@ import com.compassuol.sp.challenge.ecommerce.exception.ErrorMessage;
 import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductCreateDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
-import com.compassuol.sp.challenge.ecommerce.product.dto.UpdateProductDTO;
+import com.compassuol.sp.challenge.ecommerce.product.dto.ProductUpdateDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.mapper.PageableMapper;
 import com.compassuol.sp.challenge.ecommerce.product.dto.mapper.ProductMapper;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
@@ -16,7 +16,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityManager;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -111,23 +111,13 @@ public class ProductController {
                     @ApiResponse(responseCode = "404", description = "Resource not found",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
             })
-    /*@PutMapping("/{id}")
-    public ResponseEntity<ProductResponseDTO> updateProductId(@PathVariable ("id") Long id, @RequestBody UpdateProductDTO productDto){
-        Product product = productService.getById(id);
-        productService.createProduct(product);
-        ProductMapper.updateByDto(productDto, product);
-        //productService.createProduct(product);
-        return ResponseEntity.noContent().build();
-    }*/
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponseDTO> updateProductId(@PathVariable("id") Long id, @Valid @RequestBody ProductCreateDTO productDto) {
-        try {
-            Product updatedProduct = productService.updateProduct(id, ProductMapper.toProduct(productDto));
-            return ResponseEntity.ok(ProductMapper.toDTO(updatedProduct));
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<ProductResponseDTO> updateProductId(@PathVariable("id") Long id, @Valid @RequestBody ProductUpdateDTO productDto) {
+        Product product = productService.getById(id);
+        ProductMapper.updateByDto(productDto, product);
+        productService.updateProduct(product);
+        return ResponseEntity.ok(ProductMapper.toDTO(product));
     }
 
 }

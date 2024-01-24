@@ -7,7 +7,6 @@ import com.compassuol.sp.challenge.ecommerce.product.repository.projection.Produ
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,7 @@ public class ProductService {
         try{
             return productRepository.save(newProduct);
         }catch (DataIntegrityViolationException ex){
-            throw new ProductNameUniqueViolationException(String.format("Produto de nome %s já existe", newProduct.getName()));
+            throw new ProductNameUniqueViolationException(String.format("Product with name %s already exists", newProduct.getName()));
         }
     }
 
@@ -55,22 +54,18 @@ public class ProductService {
     }
 
     @Transactional
-    public Product updateProduct(Long id, Product updatedProduct) {
-        checkIfProductNameExists(updatedProduct.getName(), id);
-        Product existingProduct = getById(id);
-        existingProduct.setName(updatedProduct.getName());
-        existingProduct.setPrice(updatedProduct.getPrice());
-        existingProduct.setDescription(updatedProduct.getDescription());
+    public void updateProduct(Product product){
+        try {
+            Product existingProduct = productRepository.findByName(product.getName());
+            productRepository.save(product);
 
-        return productRepository.save(existingProduct);
-    }
-    private void checkIfProductNameExists(String newName, Long currentProductId) {
-        Product existingProductWithSameName = productRepository.findByNameIgnoreCase(newName);
-
-        if (existingProductWithSameName != null && !existingProductWithSameName.getId().equals(currentProductId)) {
-            throw new ProductNameUniqueViolationException(String.format("Product with name %s already exists", newName));
+        } catch (DataIntegrityViolationException ex) {
+            throw new ProductNameUniqueViolationException(
+                    String.format("Product with name %s already exists", product.getName())
+            );
         }
     }
+
 }
 
 
