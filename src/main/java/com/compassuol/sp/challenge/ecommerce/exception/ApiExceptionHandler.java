@@ -4,6 +4,7 @@ import com.compassuol.sp.challenge.ecommerce.product.exception.ProductNameUnique
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,14 +29,12 @@ public class ApiExceptionHandler {
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<ErrorMessage> MethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request
             , BindingResult result){
-        //logs original error
         log.error("API ERROR: ", ex);
-        //error 422
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, "CAMPOS INVÁLIDOS", result));
     }
 
     @ExceptionHandler({ProductNameUniqueViolationException.class})
-    public ResponseEntity<ErrorMessage> UniqueViolationException(RuntimeException ex, HttpServletRequest request){
+    public ResponseEntity<ErrorMessage> UniqueViolationException(DataIntegrityViolationException ex, HttpServletRequest request){
         //logs original error
         log.error("API ERROR: ", ex);
         return ResponseEntity.status(HttpStatus.CONFLICT)

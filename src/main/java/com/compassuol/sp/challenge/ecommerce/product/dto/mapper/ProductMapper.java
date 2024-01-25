@@ -2,10 +2,9 @@ package com.compassuol.sp.challenge.ecommerce.product.dto.mapper;
 
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductCreateDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
-import com.compassuol.sp.challenge.ecommerce.product.dto.UpdateProductDTO;
+import com.compassuol.sp.challenge.ecommerce.product.dto.ProductUpdateDTO;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import org.modelmapper.ModelMapper;
-import org.springframework.ui.Model;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +25,7 @@ public class ProductMapper {
         return mapper.map(createDto, Product.class);
     }
 
-    public static Product updateByDto(UpdateProductDTO updateDTO, Product product){
+    public static Product updateByDto(ProductUpdateDTO updateDTO, Product product){
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setSkipNullEnabled(true); // pula campos nulos
         mapper.map(updateDTO, product);
