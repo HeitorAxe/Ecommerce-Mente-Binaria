@@ -34,16 +34,13 @@ public class ProductService {
     @Transactional
     public void remove(Long id) {
         Product product = getById(id);
-        if (product == null) {
-            throw new IllegalArgumentException(String.format("Produto de id %d não encontrado", id));
-        }
         productRepository.deleteById(product.getId());
     }
 
     @Transactional(readOnly = true)
     public Product getById(Long id) {
         return productRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException(String.format("Produto de id %s não encontrado", id))
+                () -> new EntityNotFoundException(String.format("Produto de id %s não encontrado", id))
         );
     }
 

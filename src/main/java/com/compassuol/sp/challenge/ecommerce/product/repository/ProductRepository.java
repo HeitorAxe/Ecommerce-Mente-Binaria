@@ -16,6 +16,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<ProductProjection> findAllAsProjection(Pageable pageable);
 
     Product findByNameIgnoreCase(String newName);
-
     Optional<Product> findById(Long id);
 }
