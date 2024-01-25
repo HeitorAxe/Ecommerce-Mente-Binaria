@@ -39,7 +39,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     public Product getById(Long id) {
         return productRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(String.format("Produto de id %s não encontrado", id))
+                () -> new EntityNotFoundException(String.format("Product id %d not found", id))
         );
     }
 
