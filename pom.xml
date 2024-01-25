@@ -35,19 +35,6 @@
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
 
-		<!-- Dependencias de Jakarta Persistence (JPA) -->
-		<dependency>
-			<groupId>jakarta.persistence</groupId>
-			<artifactId>jakarta.persistence-api</artifactId>
-			<version>3.0.0</version> <!-- Ajusta la versión según sea necesario -->
-		</dependency>
-
-		<!-- Implementación de JPA (puedes elegir Hibernate u otra) -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>5.6.5.Final</version> <!-- Ajusta la versión según sea necesario -->
-		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
