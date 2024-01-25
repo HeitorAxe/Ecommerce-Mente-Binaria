@@ -1,5 +1,6 @@
-package com.compassouol.sp.challenge.ecommerce.domain;
+package com.compassuol.sp.challenge.ecommerce.entity;
 
+import com.compassuol.sp.challenge.ecommerce.common.ProductConstants;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
 import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
@@ -7,13 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-
-import static com.compassouol.sp.challenge.ecommerce.common.ProductConstants.INVALID_PRODUCT;
-import static com.compassouol.sp.challenge.ecommerce.common.ProductConstants.PRODUCT;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.*;
@@ -30,15 +26,15 @@ class ProductServiceTest {
 
     @Test
     void createProduct_WithValidData_ReturnProduct(){
-        when(productRepository.save(PRODUCT)).thenReturn(PRODUCT);
-        Product sut = productService.createProduct(PRODUCT);
-        assertThat(sut).isEqualTo(PRODUCT);
+        when(productRepository.save(ProductConstants.PRODUCT)).thenReturn(ProductConstants.PRODUCT);
+        Product sut = productService.createProduct(ProductConstants.PRODUCT);
+        assertThat(sut).isEqualTo(ProductConstants.PRODUCT);
 
     }
     @Test
     void createProduct_WithInvalidData_ThrowsException(){
-        when(productRepository.save(INVALID_PRODUCT)).thenThrow(RuntimeException.class);
-        assertThatThrownBy(() -> productService.createProduct(INVALID_PRODUCT)).isInstanceOf(RuntimeException.class);
+        when(productRepository.save(ProductConstants.INVALID_PRODUCT)).thenThrow(RuntimeException.class);
+        assertThatThrownBy(() -> productService.createProduct(ProductConstants.INVALID_PRODUCT)).isInstanceOf(RuntimeException.class);
     }
 
     @Test

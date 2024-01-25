@@ -1,4 +1,4 @@
-package com.compassouol.sp.challenge.ecommerce.common;
+package com.compassuol.sp.challenge.ecommerce.common;
 
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 
