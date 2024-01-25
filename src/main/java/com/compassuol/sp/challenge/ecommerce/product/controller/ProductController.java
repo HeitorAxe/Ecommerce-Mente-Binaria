@@ -39,11 +39,11 @@ public class ProductController {
     @Operation(summary = "Create a new product", description = "Feature to create a new user",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Resource created successfully",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponseDTO.class))),
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ProductResponseDTO.class))),
                     @ApiResponse(responseCode = "409", description = "product already registered in the system",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ErrorMessage.class))),
                     @ApiResponse(responseCode = "422", description = "Resource not processed due to invalid input data",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ErrorMessage.class)))
             })
     @PostMapping
     public ResponseEntity<ProductResponseDTO> createProduct(@Valid @RequestBody ProductCreateDTO createDto){
@@ -54,7 +54,7 @@ public class ProductController {
     @Operation(summary = "Get all products as pageable", description = "Retrieve products as pageable",
             responses = {
                     @ApiResponse(responseCode = "200", description = "List of products retrieved successfully as pageable",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PageableDTO.class)))
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = PageableDTO.class)))
             })
     @GetMapping("/page")
     public ResponseEntity<PageableDTO> getAllAsPage(@PageableDefault(size = 5)Pageable pageable){
@@ -66,7 +66,7 @@ public class ProductController {
     @Operation(summary = "List all registered products", description = "No authentication required",
             responses = {
                     @ApiResponse(responseCode = "200", description = "List all registered products",
-                            content = @Content(mediaType = "application/json",
+                            content = @Content(mediaType = "application/json;charset=UTF-8",
                                     array = @ArraySchema(schema = @Schema(implementation = ProductResponseDTO.class))))
             })
     @GetMapping
@@ -81,7 +81,7 @@ public class ProductController {
             responses = {
                     @ApiResponse(responseCode = "204", description = "Product deleted successfully"),
                     @ApiResponse(responseCode = "404", description = "Product not found",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ErrorMessage.class)))
             })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable("id") Long id){
@@ -92,12 +92,10 @@ public class ProductController {
     @Operation(summary = "Retrieve a product by id", description = "No authentication required",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Resource retrieved successfully",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponseDTO.class))),
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ProductResponseDTO.class))),
                     @ApiResponse(responseCode = "404", description = "Resource not found",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ErrorMessage.class)))
             })
-
-
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> getById(@PathVariable Long id) {
         Product product = productService.getById(id);
@@ -106,10 +104,13 @@ public class ProductController {
 
     @Operation(summary = "update product by id", description = "No authentication required",
             responses = {
-                    @ApiResponse(responseCode = "204", description = "Resource retrieved successfully",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductResponseDTO.class))),
+                    @ApiResponse(responseCode = "200", description = "Resource successfully updated",
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ProductResponseDTO.class))),
                     @ApiResponse(responseCode = "404", description = "Resource not found",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "422", description = "Resource not processed due to invalid data",
+                            content = @Content(mediaType = " application/json;charset=UTF-8",
+                                    schema = @Schema(implementation = ErrorMessage.class)))
             })
 
     @PutMapping("/{id}")
