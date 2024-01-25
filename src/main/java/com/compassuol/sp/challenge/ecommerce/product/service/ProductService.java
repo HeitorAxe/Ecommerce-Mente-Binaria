@@ -7,13 +7,14 @@ import com.compassuol.sp.challenge.ecommerce.product.repository.projection.Produ
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,16 +34,18 @@ public class ProductService {
     @Transactional
     public void remove(Long id) {
         Product product = getById(id);
+        if (product == null) {
+            throw new IllegalArgumentException(String.format("Produto de id %d não encontrado", id));
+        }
         productRepository.deleteById(product.getId());
-
     }
 
     @Transactional(readOnly = true)
     public Product getById(Long id) {
         return productRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(String.format("Produto de id %s não encontrado", id))
+                () -> new IllegalArgumentException(String.format("Produto de id %s não encontrado", id))
         );
-    }    
+    }
 
     @Transactional(readOnly = true)
     public Page<ProductProjection> getAllAsPage(Pageable pageable){
@@ -64,6 +67,7 @@ public class ProductService {
 
         return productRepository.save(existingProduct);
     }
+
     private void checkIfProductNameExists(String newName, Long currentProductId) {
         Product existingProductWithSameName = productRepository.findByNameIgnoreCase(newName);
 
