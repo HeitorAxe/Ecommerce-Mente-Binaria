@@ -3,6 +3,7 @@ package com.compassouol.sp.challenge.ecommerce.domain;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import com.compassuol.sp.challenge.ecommerce.product.exception.ProductNameUniqueViolationException;
 import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
+import com.compassuol.sp.challenge.ecommerce.product.repository.projection.ProductProjection;
 import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -11,14 +12,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-
 import static com.compassouol.sp.challenge.ecommerce.common.ProductConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+
 
 
 @ExtendWith(MockitoExtension.class)
@@ -45,13 +50,54 @@ class ProductServiceTest {
 
     @Test
     void getAllProductsAsPage_ReturnsAllProducts(){
-        //Heitor
-    }
+        List<ProductProjection> products = new ArrayList<>() {
+            {
+                add(new ProductProjection() {
+                    @Override
+                    public String getId() {
+                        return "1";
+                    }
 
+                    @Override
+                    public String getName() {
+                        return "Smartphone";
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "A phone that is also smart";
+                    }
+
+                    @Override
+                    public String getPrice() {
+                        return "1000.0";
+                    }
+                });
+            }
+        };
+        Page<ProductProjection> page = new PageImpl<>(products, PageRequest.of(0, 10), 1);
+        when(productRepository.findAllAsProjection(any())).thenReturn(page);
+        Page<ProductProjection> sut = productService.getAllAsPage(PageRequest.of(0, 10));
+        assertThat(sut).isNotEmpty();
+        assertThat(sut).hasSize(1);
+        assertThat(sut.getContent().get(0).getName()).isEqualTo("Smartphone");
+    }
     @Test
     void getAllProductsAsList_ReturnsAllProducts(){
-        //Heitor
+        List<Product> products = new ArrayList<>() {
+            {
+                add(PRODUCT);
+            }
+        };
+        when(productRepository.findAll()).thenReturn(products);
+        List<Product> sut = productService.getAll();
+        assertThat(sut).isNotEmpty();
+        assertThat(sut).hasSize(1);
+        assertThat(sut.get(0).getName()).isEqualTo(PRODUCT.getName());
+
     }
+
+
 
     @Test
     void getAllProductsAsPage_ReturnsNoProducts(){
