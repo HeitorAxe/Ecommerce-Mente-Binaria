@@ -28,6 +28,10 @@ public class Product implements Serializable {
         this.description = description;
         this.price = price;
     }
+    public Product(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
 
     @Override
     public String toString() {
