@@ -63,12 +63,18 @@ class ProductServiceTest {
 
     @Test
     void  getProductById_ByNonexistentId_ReturnsEmpty() {
-        //Loude
+        when(productRepository.findById(1L)).thenReturn(Optional.empty());
+        Optional<Product> sut =productService.get(1L);
+        assertThat(sut).isEmpty();
     }
 
     @Test
     void  getProductById_ByExistentId_ReturnsProduct() {
-        //Loude
+        when(productRepository.findById(1L)).thenReturn(Optional.of(PRODUCT));
+        Optional<Product> sut =productService.get(1L);
+        assertThat(sut).isNotEmpty();
+        assertThat(sut.get()).isEqualTo(PRODUCT);
+
     }
 
     @Test
