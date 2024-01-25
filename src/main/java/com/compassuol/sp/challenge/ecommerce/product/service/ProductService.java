@@ -34,7 +34,6 @@ public class ProductService {
     public void remove(Long id) {
         Product product = getById(id);
         productRepository.deleteById(product.getId());
-
     }
 
     @Transactional(readOnly = true)
@@ -42,7 +41,7 @@ public class ProductService {
         return productRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Produto de id %s não encontrado", id))
         );
-    }    
+    }
 
     @Transactional(readOnly = true)
     public Page<ProductProjection> getAllAsPage(Pageable pageable){
@@ -59,7 +58,6 @@ public class ProductService {
         try {
             Product existingProduct = productRepository.findByName(product.getName());
             productRepository.save(product);
-
         } catch (DataIntegrityViolationException ex) {
             throw new ProductNameUniqueViolationException(
                     String.format("Product with name %s already exists", product.getName())
