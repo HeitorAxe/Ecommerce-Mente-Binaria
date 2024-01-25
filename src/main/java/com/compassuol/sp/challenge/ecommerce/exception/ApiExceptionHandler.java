@@ -22,7 +22,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 public class ApiExceptionHandler {
 
     @ExceptionHandler({EntityNotFoundException.class})
-    public ResponseEntity<ErrorMessage> EntityNotFoundException(EntityNotFoundException ex, HttpServletRequest request){
+    public ResponseEntity<ErrorMessage> handleEntityNotFoundException(EntityNotFoundException ex, HttpServletRequest request){
         log.error("API ERROR: ", ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -30,14 +30,14 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
-    public ResponseEntity<ErrorMessage> MethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request
+    public ResponseEntity<ErrorMessage> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request
             , BindingResult result){
         log.error("API ERROR: ", ex);
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, "Invalid Fields", result));
     }
 
     @ExceptionHandler({ProductNameUniqueViolationException.class})
-    public ResponseEntity<ErrorMessage> UniqueViolationException(DataIntegrityViolationException ex, HttpServletRequest request){
+    public ResponseEntity<ErrorMessage> handleUniqueViolationException(DataIntegrityViolationException ex, HttpServletRequest request){
         log.error("API ERROR: ", ex);
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -45,7 +45,7 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
-    public ResponseEntity<ErrorMessage> MethodNotAllowed(HttpRequestMethodNotSupportedException ex, HttpServletRequest request){
+    public ResponseEntity<ErrorMessage> handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex, HttpServletRequest request){
         log.error("API ERROR: ", ex);
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -53,7 +53,7 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
-    public ResponseEntity<ErrorMessage> MethodTypeMismatch(MethodArgumentTypeMismatchException ex, HttpServletRequest request){
+    public ResponseEntity<ErrorMessage> handleMethodTypeMismatch(MethodArgumentTypeMismatchException ex, HttpServletRequest request){
         log.error("API ERROR: ", ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -61,7 +61,7 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler({NoResourceFoundException.class})
-    public ResponseEntity<ErrorMessage> ResourceNotFound(NoResourceFoundException ex, HttpServletRequest request){
+    public ResponseEntity<ErrorMessage> handleResourceNotFound(NoResourceFoundException ex, HttpServletRequest request){
         log.error("API ERROR: ", ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
