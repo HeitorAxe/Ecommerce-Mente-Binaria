@@ -14,7 +14,7 @@ public class ProductCreateDTO {
 
     @NotBlank(message = "Name cannot be blank ")
     private String name;
-    @Size(min = 10, max = 100)
+    @Size(min = 10, max = 100, message = "Size must be between 10 and 100")
     @NotBlank(message = "Description cannot be blank")
     private String description;
     @NotNull(message = "Price cannot be null")
