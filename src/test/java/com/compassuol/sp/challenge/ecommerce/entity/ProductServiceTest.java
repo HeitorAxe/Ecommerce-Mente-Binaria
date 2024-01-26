@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.PRODUCT;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -49,32 +49,8 @@ class ProductServiceTest {
 
     @Test
     void getAllProductsAsPage_ReturnsAllProducts(){
-        List<ProductProjection> products = new ArrayList<>() {
-            {
-                add(new ProductProjection() {
-                    @Override
-                    public String getId() {
-                        return "1";
-                    }
 
-                    @Override
-                    public String getName() {
-                        return "Smartphone";
-                    }
-
-                    @Override
-                    public String getDescription() {
-                        return "A phone that is also smart";
-                    }
-
-                    @Override
-                    public String getPrice() {
-                        return "1000.0";
-                    }
-                });
-            }
-        };
-        Page<ProductProjection> page = new PageImpl<>(products, PageRequest.of(0, 10), 1);
+        Page<ProductProjection> page = new PageImpl<>(PRODUCT_PROJECTIONS, PageRequest.of(0, 10), 1);
         when(productRepository.findAllAsProjection(any())).thenReturn(page);
         Page<ProductProjection> sut = productService.getAllAsPage(PageRequest.of(0, 10));
         assertThat(sut).isNotEmpty();
@@ -100,12 +76,20 @@ class ProductServiceTest {
 
     @Test
     void getAllProductsAsPage_ReturnsNoProducts(){
-        //Heitor
+        Page<ProductProjection> page = new PageImpl<>(PRODUCT_PROJECTIONS_EMPTY, PageRequest.of(0, 10), 1);
+        when(productRepository.findAllAsProjection(any())).thenReturn(page);
+        Page<ProductProjection> sut = productService.getAllAsPage(PageRequest.of(0, 10));
+        assertThat(sut).isEmpty();
+        assertThat(sut).hasSize(0);
     }
 
     @Test
     void getAllProductsAsList_ReturnsNoProducts(){
-        //Heitor
+        List<Product> products = new ArrayList<>();
+        when(productRepository.findAll()).thenReturn(products);
+        List<Product> sut = productService.getAll();
+        assertThat(sut).isEmpty();
+        assertThat(sut).hasSize(0);
     }
     @Test
     void  getProductById_ByNonexistentId_ReturnsEmpty() {
