@@ -1,7 +1,10 @@
 package com.compassuol.sp.challenge.ecommerce;
 
+import com.compassuol.sp.challenge.ecommerce.exception.ErrorMessage;
 import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
+import com.compassuol.sp.challenge.ecommerce.product.dto.ProductCreateDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,9 +21,40 @@ import java.util.List;
 public class ProductIT {
     @Autowired
     WebTestClient testClient;
+    @Test
+    public void createProduct_WithValidData_ReturnCreatedProductWithStatus201() {
+        ProductResponseDTO responseBody = testClient.post()
+                .uri("/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new ProductCreateDTO("Avião de combate", "Descrição do Produto", 1.00))
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(ProductResponseDTO.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getId()).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getName()).isEqualTo("Avião de combate");
+        org.assertj.core.api.Assertions.assertThat(responseBody.getDescription()).isEqualTo("Descrição do Produto");
+        org.assertj.core.api.Assertions.assertThat(responseBody.getPrice()).isEqualTo(1.00);
+    }
+    @Test
+    public void createProduct_WithInvalidData_ReturnErrorMessageStatus422(){
+        ErrorMessage responseBody = testClient.post()
+                .uri("/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new ProductCreateDTO("", "", 0.0))
+                .exchange()
+                .expectStatus().isEqualTo(422)
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(422);
+    }
 
     @Test
-    public void GetProducts_ReturnsAllProducts() {
+    public void listProducts_ReturnProductListWithStatus200() {
         List<ProductResponseDTO> responseBody = testClient.get()
                 .uri("/products")
                 .exchange()
@@ -32,8 +66,10 @@ public class ProductIT {
         org.assertj.core.api.Assertions.assertThat(responseBody.get(0).getId()).isEqualTo(1);
         org.assertj.core.api.Assertions.assertThat(responseBody.size()).isEqualTo(6);
     }
-  
-      public void GetProductsAsPage_ReturnsProductsPage() {
+
+
+    @Test
+    public void listProductsAsPage_ReturnProductListAsPageWithStatus200() {
         List<PageableDTO> responseBody = testClient.get()
                 .uri("/products/page")
                 .exchange()
@@ -48,6 +84,31 @@ public class ProductIT {
 
 
     }
+    @Test
+    public void buscaProduct_WithExistingIdReturn200(){
+        testClient
+                .get()
+                .uri("/products/1")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("id").isEqualTo(1)
+                .jsonPath("price").isEqualTo(200);
+
+    }
+
+    @Test
+    public void buscaProduct_WithExistingIdReturn404(){
+        testClient
+                .get()
+                .uri("/products/10")
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .jsonPath("status").isEqualTo(404);
+
+    }
+
 
     @Test
     public void GetRemoveProducts_ReturnsNoProductsAfterRemoval() {
@@ -93,7 +154,5 @@ public class ProductIT {
                 .exchange()
                 .expectStatus().isEqualTo(405);
     }
-
-
 
 }
