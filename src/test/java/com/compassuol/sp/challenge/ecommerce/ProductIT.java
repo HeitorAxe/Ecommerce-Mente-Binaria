@@ -2,6 +2,7 @@ package com.compassuol.sp.challenge.ecommerce;
 
 import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,6 +49,32 @@ public class ProductIT {
 
 
     }
+    @Test
+    public void buscaProduct_WithExistingIdReturn200(){
+        testClient
+                .get()
+                .uri("/products/1")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("id").isEqualTo(1)
+                .jsonPath("price").isEqualTo(200);
+
+    }
+
+    @Test
+    public void buscaProduct_WithExistingIdReturn404(){
+        testClient
+                .get()
+                .uri("/products/10")
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .jsonPath("status").isEqualTo(404);
+
+    }
+
+
 
     @Test
     public void GetRemoveProducts_ReturnsNoProductsAfterRemoval() {
@@ -93,7 +120,5 @@ public class ProductIT {
                 .exchange()
                 .expectStatus().isEqualTo(405);
     }
-
-
 
 }

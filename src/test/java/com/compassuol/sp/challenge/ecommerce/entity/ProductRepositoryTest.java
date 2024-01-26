@@ -69,6 +69,7 @@ public class ProductRepositoryTest {
         Assertions.assertThat(response).isEmpty();
     }
 
+
     @Sql(scripts = "/sql/import_products.sql")
     @Test
     public void listAllProducts_ReturnsAllProducts(){
