@@ -52,6 +52,7 @@ public class ProductIT {
         org.assertj.core.api.Assertions.assertThat(responseBody.size()).isEqualTo(6);
     }
 
+
     @Test
     public void listProductsAsPage_ReturnProductListAsPageWithStatus200() {
         List<PageableDTO> responseBody = testClient.get()
@@ -68,6 +69,52 @@ public class ProductIT {
 
 
     }
+
+    @Test
+    public void GetRemoveProducts_ReturnsNoProductsAfterRemoval() {
+        testClient.delete()
+                .uri("/products/1")
+                .exchange()
+                .expectStatus().isNoContent();
+
+        testClient.get()
+                .uri("/products/1")
+                .exchange()
+                .expectStatus().isNotFound();
+
+    }
+
+    @Test
+    public void ReturnsMethodNotAllowed() {
+        testClient.post()
+                .uri("/products/1")
+                .exchange()
+                .expectStatus().isEqualTo(405);
+    }
+
+    @Test
+    public void ReturnsMethodArgumentTypeMismatch() {
+        testClient.get()
+                .uri("/products/asdasd")
+                .exchange()
+                .expectStatus().isEqualTo(400);
+    }
+    @Test
+    public void ReturnsResourceNotFound() {
+        testClient.get()
+                .uri("/airplanes")
+                .exchange()
+                .expectStatus().isEqualTo(404);
+    }
+
+    @Test
+    public void ReturnsMethodArgumentNotAllowedMismatch() {
+        testClient.put()
+                .uri("/products")
+                .exchange()
+                .expectStatus().isEqualTo(405);
+    }
+
 
 
 }
