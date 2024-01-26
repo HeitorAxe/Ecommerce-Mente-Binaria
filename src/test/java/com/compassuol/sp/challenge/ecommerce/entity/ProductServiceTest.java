@@ -2,6 +2,7 @@ package com.compassuol.sp.challenge.ecommerce.entity;
 
 import com.compassuol.sp.challenge.ecommerce.common.ProductConstants;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
+import com.compassuol.sp.challenge.ecommerce.product.exception.ProductNameUniqueViolationException;
 import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
 import com.compassuol.sp.challenge.ecommerce.product.repository.projection.ProductProjection;
 import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -134,15 +136,17 @@ class ProductServiceTest {
     }
 
     @Test
-    void updateProduct_WithValidDatas(){
-        //Luiz
+    void updateProduct_WithInvalidId() {
+        when(productRepository.findById(anyLong())).thenThrow(EntityNotFoundException.class);
+
+        assertThatThrownBy(() -> productService.getById(1L)).isInstanceOf(EntityNotFoundException.class);
+
+        verify(productRepository).findById(1L);
     }
     @Test
-    void updateProduct_WithInvalidId(){
-        //Luiz
-    }
-    @Test
-    void updateProduct_WithInvalidDatas(){
-        //Luiz
+    void updateProduct_WithExistingName_ThrowsException(){
+        when(productRepository.save(PRODUCT)).thenThrow(ProductNameUniqueViolationException.class);
+        assertThatThrownBy(() -> productService.updateProduct(PRODUCT)).isInstanceOf(DataIntegrityViolationException.class);
+
     }
 }
