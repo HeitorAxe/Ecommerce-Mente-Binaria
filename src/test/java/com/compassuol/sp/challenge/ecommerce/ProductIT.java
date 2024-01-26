@@ -55,16 +55,11 @@ public class ProductIT {
                 .exchange()
                 .expectStatus().isNoContent();
 
-        // Verify that no products exist after removal
-        List<ProductResponseDTO> responseBody = testClient.get()
-                .uri("/products")
+        testClient.get()
+                .uri("/products/1")
                 .exchange()
-                .expectStatus().isOk()
-                .expectBodyList(ProductResponseDTO.class)
-                .returnResult().getResponseBody();
+                .expectStatus().isNotFound();
 
-        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
-        org.assertj.core.api.Assertions.assertThat(responseBody).isEmpty();
     }
 
 
