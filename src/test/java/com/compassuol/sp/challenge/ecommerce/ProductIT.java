@@ -1,5 +1,6 @@
 package com.compassuol.sp.challenge.ecommerce;
 
+import com.compassuol.sp.challenge.ecommerce.exception.ErrorMessage;
 import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductCreateDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
@@ -19,7 +20,6 @@ import java.util.List;
 public class ProductIT {
     @Autowired
     WebTestClient testClient;
-    @Sql(scripts = {"/sql/remove_products.sql"}, executionPhase= Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Test
     public void createProduct_WithValidData_ReturnCreatedProductWithStatus201() {
         ProductResponseDTO responseBody = testClient.post()
@@ -36,6 +36,20 @@ public class ProductIT {
         org.assertj.core.api.Assertions.assertThat(responseBody.getName()).isEqualTo("Avião de combate");
         org.assertj.core.api.Assertions.assertThat(responseBody.getDescription()).isEqualTo("Descrição do Produto");
         org.assertj.core.api.Assertions.assertThat(responseBody.getPrice()).isEqualTo(1.00);
+    }
+    @Test
+    public void createProduct_WithInvalidData_ReturnErrorMessageStatus422(){
+        ErrorMessage responseBody = testClient.post()
+                .uri("/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new ProductCreateDTO("", "", 0.0))
+                .exchange()
+                .expectStatus().isEqualTo(422)
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(422);
     }
 
     @Test
@@ -69,7 +83,6 @@ public class ProductIT {
 
 
     }
-
     @Test
     public void GetRemoveProducts_ReturnsNoProductsAfterRemoval() {
         testClient.delete()
