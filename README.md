@@ -77,7 +77,7 @@ Adiciona um novo produto.
 
 Excluir um produto específico por ID.
 
-**Corpo da solicitação:**
+**Exemplo de resposta:**
 ```json
 {
   204 No Content
