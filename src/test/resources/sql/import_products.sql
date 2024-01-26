@@ -1,0 +1,1 @@
+insert into PRODUCTS (id, name, description, price) values (1, 'Televisão', 'Televisão da boa', 200);
