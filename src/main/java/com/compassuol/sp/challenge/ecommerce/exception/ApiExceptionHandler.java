@@ -68,13 +68,6 @@ public class ApiExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.NOT_FOUND, "The resource you are looking for was not found."));
     }
 
-    @ExceptionHandler({HttpServerErrorException.InternalServerError.class})
-    public ResponseEntity<ErrorMessage> handleInternalServerError(HttpServerErrorException.InternalServerError ex, HttpServletRequest request){
-        log.error("API ERROR: ", ex);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorMessage(request, HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage()));
-    }
 
 
 }
