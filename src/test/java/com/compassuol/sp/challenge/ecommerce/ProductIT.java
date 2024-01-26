@@ -1,9 +1,11 @@
 package com.compassuol.sp.challenge.ecommerce;
 
+import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -17,7 +19,7 @@ public class ProductIT {
     WebTestClient testClient;
 
     @Test
-    public void Products_ReturnsAllProducts() {
+    public void GetProducts_ReturnsAllProducts() {
         List<ProductResponseDTO> responseBody = testClient.get()
                 .uri("/products")
                 .exchange()
@@ -26,7 +28,26 @@ public class ProductIT {
                 .returnResult().getResponseBody();
 
         org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
-        org.assertj.core.api.Assertions.assertThat(responseBody.size()).isEqualTo(1);
+        org.assertj.core.api.Assertions.assertThat(responseBody.get(0).getId()).isEqualTo(1);
+        org.assertj.core.api.Assertions.assertThat(responseBody.size()).isEqualTo(6);
     }
+
+    @Test
+    public void GetProductsAsPage_ReturnsProductsPage() {
+        List<PageableDTO> responseBody = testClient.get()
+                .uri("/products/page")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(PageableDTO.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.get(0).getNumber()).isEqualTo(0);
+        org.assertj.core.api.Assertions.assertThat(responseBody.get(0).getSize()).isEqualTo(5);
+        org.assertj.core.api.Assertions.assertThat(responseBody.get(0).getTotalElements()).isEqualTo(6);
+
+
+    }
+
 
 }
