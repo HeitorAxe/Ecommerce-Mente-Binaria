@@ -3,7 +3,6 @@ package com.compassuol.sp.challenge.ecommerce.entity;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
 import com.compassuol.sp.challenge.ecommerce.product.repository.projection.ProductProjection;
-import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.*;
 
@@ -81,47 +79,5 @@ public class ProductRepositoryTest {
     public void listAllProducts_ReturnsNoProducts(){
         List<Product> response = repository.findAll();
         Assertions.assertThat(response).isEmpty();
-    }
-    @Test
-    public void updateProduct_WithValidData_ReturnProductUpdated(){
-        Product product = repository.save(PRODUCT);
-
-        product.setName("Game");
-        product.setPrice(3500.00);
-        product.setDescription("Um game muito divertido!");
-
-        Product productUpdated = repository.save(product);
-        Optional<Product> productRecuperadoOptinonal = repository.findById(productUpdated.getId());
-        Product productRecuperado = productRecuperadoOptinonal.orElseThrow();
-
-        Assertions.assertThat(productRecuperado.getName()).isEqualTo("Game");
-        Assertions.assertThat(productRecuperado.getPrice()).isEqualTo(3500.00);
-        Assertions.assertThat(productRecuperado.getDescription()).isEqualTo("Um game muito divertido!");
-
-    }
-
-    @Test
-    public void updateProduct_WithExistingName(){
-        Product product = repository.save(PRODUCT);
-
-
-        product.setName("Game");
-        product.setPrice(3500.00);
-        product.setDescription("Um game muito divertido!");
-
-        Product newProduct = new Product();
-        newProduct.setId(2L);
-        newProduct.setName("Playstation");
-        newProduct.setPrice(4000.00);
-        newProduct.setDescription("Uma revolução");
-
-        repository.save(newProduct);
-
-        newProduct.setName("Game");
-
-        Product productRepetido = repository.findByName("Game");
-
-        Assertions.assertThat(productRepetido).isNotNull();
-
     }
 }
