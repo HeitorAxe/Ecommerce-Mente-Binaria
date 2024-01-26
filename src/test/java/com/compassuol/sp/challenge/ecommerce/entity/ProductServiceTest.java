@@ -115,13 +115,8 @@ class ProductServiceTest {
 
     @Test
     void removeProduct_WithExistingId_doesNotThrowAnyException() {
-        //assertThatCode(() -> productService.remove(1L)).doesNotThrowAnyException();
         ProductRepository productRepositoryMock = mock(ProductRepository.class);
-        Product existingProduct = new Product();
-        existingProduct.setId(1L);
-        existingProduct.setName("Notebook");
-        existingProduct.setDescription("Notebook de boa qualidade!!!!");
-        existingProduct.setPrice(2000.0);
+        Product existingProduct = new Product(1L,"Notebook", "Notebook de boa qualidade!!!!",2000.0);
         when(productRepositoryMock.findById(1L)).thenReturn(java.util.Optional.of(existingProduct));
         ProductService productService = new ProductService(productRepositoryMock);
         assertThatCode(() -> productService.remove(1L)).doesNotThrowAnyException();
@@ -131,7 +126,6 @@ class ProductServiceTest {
 
     @Test
     void removeProduct_WithNonexistingId_ThrowsException(){
-
         assertThatThrownBy(() -> productService.remove(99L)).isInstanceOf(RuntimeException.class);
     }
 
