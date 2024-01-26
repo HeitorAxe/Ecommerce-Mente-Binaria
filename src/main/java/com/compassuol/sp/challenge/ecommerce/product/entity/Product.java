@@ -18,15 +18,12 @@ public class Product implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
     @Column(name = "name", unique = true, nullable = false, length = 45)
     private String name;
 
-    @NotEmpty
     @Column(name = "description", length = 100) // minimo de 10 caracteres na descrição
     private String description;
 
-    @NotEmpty
     @Column(name = "price", nullable = false)
     private Double price;
 
