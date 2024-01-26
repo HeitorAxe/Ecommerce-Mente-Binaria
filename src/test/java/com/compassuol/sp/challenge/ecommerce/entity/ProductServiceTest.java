@@ -5,6 +5,7 @@ import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
 import com.compassuol.sp.challenge.ecommerce.product.repository.projection.ProductProjection;
 import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,9 +14,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.PRODUCT;
@@ -103,22 +105,27 @@ class ProductServiceTest {
     void getAllProductsAsList_ReturnsNoProducts(){
         //Heitor
     }
+    @Test
+    void  getProductById_ByNonexistentId_ReturnsEmpty() {
+        Long nonexistentProductId = 99L;
+        when(productRepository.findById(nonexistentProductId)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> productService.getById(nonexistentProductId))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage("Product id " + nonexistentProductId + " not found");
+        verify(productRepository, times(1)).findById(nonexistentProductId);
+    }
 
-//    @Test
-//    void  getProductById_ByNonexistentId_ReturnsEmpty() {
-//        when(productRepository.findById(1L)).thenReturn(Optional.empty());
-//        Optional<Product> sut =productService.get(1L);
-//        assertThat(sut).isEmpty();
-//    }
-//
-//    @Test
-//    void  getProductById_ByExistentId_ReturnsProduct() {
-//        when(productRepository.findById(1L)).thenReturn(Optional.of(PRODUCT));
-//        Optional<Product> sut =productService.get(1L);
-//        assertThat(sut).isNotEmpty();
-//        assertThat(sut.get()).isEqualTo(PRODUCT);
-//
-//    }
+    @Test
+    void  getProductById_ByExistentId_ReturnsProduct() {
+        Long productId = 1L;
+        Product existingProduct = new Product(1L, "Tv", "Description bem", 1000.0);
+        when(productRepository.findById(productId)).thenReturn(Optional.of(existingProduct));
+        Product result = productService.getById(productId);
+        assertThat(result).isNotNull()
+                .extracting(Product::getId, Product::getName, Product::getDescription, Product::getPrice)
+                .containsExactly(1L, "Tv", "Description bem", 1000.0);
+        verify(productRepository, times(1)).findById(productId);
+    }
 
     @Test
     void removeProduct_WithExistingId_doesNotThrowAnyException() {
@@ -135,6 +142,7 @@ class ProductServiceTest {
         verify(productRepositoryMock, times(1)).deleteById(1L);
 
     }
+
     @Test
     void removeProduct_WithNonexistingId_ThrowsException(){
 
