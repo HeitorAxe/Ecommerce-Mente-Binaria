@@ -31,9 +31,8 @@ public class ProductIT {
         org.assertj.core.api.Assertions.assertThat(responseBody.get(0).getId()).isEqualTo(1);
         org.assertj.core.api.Assertions.assertThat(responseBody.size()).isEqualTo(6);
     }
-
-    @Test
-    public void GetProductsAsPage_ReturnsProductsPage() {
+  
+      public void GetProductsAsPage_ReturnsProductsPage() {
         List<PageableDTO> responseBody = testClient.get()
                 .uri("/products/page")
                 .exchange()
@@ -47,6 +46,25 @@ public class ProductIT {
         org.assertj.core.api.Assertions.assertThat(responseBody.get(0).getTotalElements()).isEqualTo(6);
 
 
+    }
+
+    @Test
+    public void GetRemoveProducts_ReturnsNoProductsAfterRemoval() {
+        testClient.delete()
+                .uri("/products/1")
+                .exchange()
+                .expectStatus().isNoContent();
+
+        // Verify that no products exist after removal
+        List<ProductResponseDTO> responseBody = testClient.get()
+                .uri("/products")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(ProductResponseDTO.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody).isEmpty();
     }
 
 
