@@ -63,7 +63,7 @@ public class ProductIT {
                 .returnResult().getResponseBody();
 
         org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
-        org.assertj.core.api.Assertions.assertThat(responseBody.get(0).getId()).isEqualTo(1);
+        org.assertj.core.api.Assertions.assertThat(responseBody.get(0).getId()).isEqualTo(100);
         org.assertj.core.api.Assertions.assertThat(responseBody.size()).isEqualTo(6);
     }
 
@@ -88,11 +88,11 @@ public class ProductIT {
     public void buscaProduct_WithExistingIdReturn200(){
         testClient
                 .get()
-                .uri("/products/1")
+                .uri("/products/100")
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
-                .jsonPath("id").isEqualTo(1)
+                .jsonPath("id").isEqualTo(100)
                 .jsonPath("price").isEqualTo(200);
 
     }
@@ -113,12 +113,12 @@ public class ProductIT {
     @Test
     public void GetRemoveProducts_ReturnsNoProductsAfterRemoval() {
         testClient.delete()
-                .uri("/products/1")
+                .uri("/products/100")
                 .exchange()
                 .expectStatus().isNoContent();
 
         testClient.get()
-                .uri("/products/1")
+                .uri("/products/100")
                 .exchange()
                 .expectStatus().isNotFound();
 
