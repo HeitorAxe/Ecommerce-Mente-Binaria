@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -61,6 +62,38 @@ public class ProductIT {
                 .expectStatus().isNotFound();
 
     }
+
+    @Test
+    public void ReturnsMethodNotAllowed() {
+        testClient.post()
+                .uri("/products/1")
+                .exchange()
+                .expectStatus().isEqualTo(405);
+    }
+
+    @Test
+    public void ReturnsMethodArgumentTypeMismatch() {
+        testClient.get()
+                .uri("/products/asdasd")
+                .exchange()
+                .expectStatus().isEqualTo(400);
+    }
+    @Test
+    public void ReturnsResourceNotFound() {
+        testClient.get()
+                .uri("/airplanes")
+                .exchange()
+                .expectStatus().isEqualTo(404);
+    }
+
+    @Test
+    public void ReturnsMethodArgumentNotAllowedMismatch() {
+        testClient.put()
+                .uri("/products")
+                .exchange()
+                .expectStatus().isEqualTo(405);
+    }
+
 
 
 }
