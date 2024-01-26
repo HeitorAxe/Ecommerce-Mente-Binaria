@@ -1,11 +1,13 @@
 package com.compassuol.sp.challenge.ecommerce;
 
 import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
+import com.compassuol.sp.challenge.ecommerce.product.dto.ProductCreateDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -17,9 +19,27 @@ import java.util.List;
 public class ProductIT {
     @Autowired
     WebTestClient testClient;
+    @Sql(scripts = {"/sql/remove_products.sql"}, executionPhase= Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Test
+    public void createProduct_WithValidData_ReturnCreatedProductWithStatus201() {
+        ProductResponseDTO responseBody = testClient.post()
+                .uri("/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new ProductCreateDTO("Avião de combate", "Descrição do Produto", 1.00))
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(ProductResponseDTO.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getId()).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getName()).isEqualTo("Avião de combate");
+        org.assertj.core.api.Assertions.assertThat(responseBody.getDescription()).isEqualTo("Descrição do Produto");
+        org.assertj.core.api.Assertions.assertThat(responseBody.getPrice()).isEqualTo(1.00);
+    }
 
     @Test
-    public void GetProducts_ReturnsAllProducts() {
+    public void listProducts_ReturnProductListWithStatus200() {
         List<ProductResponseDTO> responseBody = testClient.get()
                 .uri("/products")
                 .exchange()
@@ -33,7 +53,7 @@ public class ProductIT {
     }
 
     @Test
-    public void GetProductsAsPage_ReturnsProductsPage() {
+    public void listProductsAsPage_ReturnProductListAsPageWithStatus200() {
         List<PageableDTO> responseBody = testClient.get()
                 .uri("/products/page")
                 .exchange()
