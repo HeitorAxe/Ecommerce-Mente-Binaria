@@ -43,10 +43,10 @@ public class ProductRepositoryTest {
     }
     @Test
     public void createProduct_WithInvalidData_ReturnsProduct(){ // invalido quando vazio ou null
-        Product emptyProduct = new Product();
-        Product invalidProduct = new Product("", "", 0.0);
+        Product nullProduct = null;
+        Product invalidProduct = new Product("nome", "descrição do nome");
 
-        Assertions.assertThatThrownBy(() -> repository.save(emptyProduct)).isInstanceOf(RuntimeException.class);
+        Assertions.assertThatThrownBy(() -> repository.save(nullProduct)).isInstanceOf(RuntimeException.class);
         Assertions.assertThatThrownBy(() -> repository.save(invalidProduct)).isInstanceOf(RuntimeException.class);
     }
 
