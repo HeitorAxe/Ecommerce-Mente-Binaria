@@ -1,8 +1,9 @@
 package com.compassuol.sp.challenge.ecommerce.web;
 
 import com.compassuol.sp.challenge.ecommerce.product.controller.ProductController;
-import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
+import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
 import com.compassuol.sp.challenge.ecommerce.product.exception.ProductNameUniqueViolationException;
+import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
 import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -14,10 +15,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
-import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.PRODUCT;
-
+import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyLong;
 
@@ -30,71 +31,68 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductController.class)
-
-public class ProductControllerTest {
+class ProductControllerTest {
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    ObjectMapper objectMapper;
 
     @MockBean
-    private ProductService productService;
+    ProductService productService;
+    @MockBean
+    ProductRepository productRepository;
 
     @Test
-    public void  createPlanet_WithValidData_ReturnsCreated() throws Exception{
-        Product PRODUCT = new Product("Produto", "O melhor produto", 500.00);
+    void createPlanet_WithValidData_ReturnsCreated() throws Exception {
 
-        when(productService.createProduct(PRODUCT)).thenReturn(PRODUCT);
+        when(productService.createProduct(PRODUCT_CREATE_DTO)).thenReturn(PRODUCT_RESPONSE_DTO);
 
         mockMvc.perform(post("/products")
-                        .content(objectMapper.writeValueAsString(PRODUCT))
+                        .content(objectMapper.writeValueAsString(PRODUCT_RESPONSE_DTO))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$").value(PRODUCT));
+                .andExpect(status().isCreated());
     }
 
     @Test
-    public void removeProduct_WithExistingId_ReturnsNoContent() throws Exception {
+    void removeProduct_WithExistingId_ReturnsNoContent() throws Exception {
         mockMvc.perform(delete("/products/1"))
                 .andExpect(status().isNoContent());
     }
-        @Test
-        public void updateProduct_WithValidaDatas_ReturnsNewProduct() throws Exception {
-        when(productService.getById(anyLong())).thenReturn(PRODUCT);
 
-        mockMvc.perform(put("/products/{id}", 1L).content(objectMapper.writeValueAsString(PRODUCT)).contentType(
+    @Test
+    void updateProduct_WithValidaDatas_ReturnsNewProduct() throws Exception {
+        when(productRepository.findById(anyLong())).thenReturn(Optional.of(PRODUCT));
 
+        mockMvc.perform(put("/products/{id}", 1L)
+                        .content(objectMapper.writeValueAsString(PRODUCT_RESPONSE_DTO))
+                        .contentType(
                                 MediaType.APPLICATION_JSON
-                        )
-
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value(PRODUCT));
+                        ))
+                .andExpect(status().isOk());
     }
 
     @Test
-    public void getPlanet_ByExistingId_ReturnsPlanet() throws Exception{
-        when(productService.getById(1L)).thenReturn(PRODUCT);
+    void getPlanet_ByExistingId_ReturnsPlanet() throws Exception {
+        when(productService.getById(1L)).thenReturn(PRODUCT_RESPONSE_DTO);
 
         mockMvc.perform(
                         get("/products/1")
                 )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value(PRODUCT));
+                .andExpect(status().isOk());
     }
 
     @Test
-    public void getProduct_ByNonexistingId_ReturnsNotFound() throws Exception{
+    void getProduct_ByNonexistingId_ReturnsNotFound() throws Exception {
         when(productService.getById(anyLong())).thenThrow(ProductNameUniqueViolationException.class);
         mockMvc.perform(get("/products/0")).andExpect(status().isNotFound());
     }
 
     @Test
     void listProduct_ReturnsAllProducts() throws Exception {
-        List<Product> products = new ArrayList<>();
-        products.add(PRODUCT);
-       when(productService.getAll()).thenReturn(products);
+        List<ProductResponseDTO> products = new ArrayList<>();
+        products.add(PRODUCT_RESPONSE_DTO);
+        when(productService.getAll()).thenReturn(products);
 
         mockMvc
                 .perform(

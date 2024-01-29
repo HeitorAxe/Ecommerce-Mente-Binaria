@@ -1,19 +1,22 @@
 package com.compassuol.sp.challenge.ecommerce.product.service;
 
+import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
+import com.compassuol.sp.challenge.ecommerce.product.dto.ProductCreateDTO;
+import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
+import com.compassuol.sp.challenge.ecommerce.product.dto.ProductUpdateDTO;
+import com.compassuol.sp.challenge.ecommerce.product.dto.mapper.PageableMapper;
+import com.compassuol.sp.challenge.ecommerce.product.dto.mapper.ProductMapper;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import com.compassuol.sp.challenge.ecommerce.product.exception.ProductNameUniqueViolationException;
 import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
-import com.compassuol.sp.challenge.ecommerce.product.repository.projection.ProductProjection;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,47 +25,52 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     @Transactional
-    public Product createProduct(Product newProduct) {
-        try{
-            return productRepository.save(newProduct);
-        }catch (DataIntegrityViolationException ex){
+    public ProductResponseDTO createProduct(ProductCreateDTO newProduct) {
+        try {
+            return ProductMapper.toDTO(productRepository.save(ProductMapper.toProduct(newProduct)));
+        } catch (DataIntegrityViolationException ex) {
             throw new ProductNameUniqueViolationException(String.format("Product with name %s already exists", newProduct.getName()));
         }
     }
 
     @Transactional
     public void remove(Long id) {
-        Product product = getById(id);
+        Product product = productRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(String.format("Product id %d not found", id))
+        );
         productRepository.deleteById(product.getId());
     }
 
     @Transactional(readOnly = true)
-    public Product getById(Long id) {
-        return productRepository.findById(id).orElseThrow(
+    public ProductResponseDTO getById(Long id) {
+        return ProductMapper.toDTO(productRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Product id %d not found", id))
-        );
+        ));
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductProjection> getAllAsPage(Pageable pageable){
-        return productRepository.findAllAsProjection(pageable);
+    public PageableDTO getAllAsPage(Pageable pageable) {
+        return PageableMapper.toDTO(productRepository.findAllAsProjection(pageable));
     }
 
     @Transactional(readOnly = true)
-    public List<Product> getAll(){
-        return productRepository.findAll();
+    public List<ProductResponseDTO> getAll() {
+        return ProductMapper.toListDTO(productRepository.findAll());
     }
 
     @Transactional
-    public void updateProduct(Product product){
-        try {
-            Product existingProduct = productRepository.findByName(product.getName());
-            productRepository.save(product);
-        } catch (DataIntegrityViolationException ex) {
+    public ProductResponseDTO updateProduct(ProductUpdateDTO productUpdate, Long id) {
+        Product product = productRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(String.format("Product id %d not found", id))
+        );
+        Product existing = productRepository.findByName(productUpdate.getName());
+        if (existing != null && !existing.getId().equals(product.getId()))
             throw new ProductNameUniqueViolationException(
-                    String.format("Product with name %s already exists", product.getName())
+                    String.format("Product with name %s already exists", productUpdate.getName())
             );
-        }
+        ProductMapper.updateByDto(productUpdate, product);
+        productRepository.save(product);
+        return ProductMapper.toDTO(product);
     }
 }
 

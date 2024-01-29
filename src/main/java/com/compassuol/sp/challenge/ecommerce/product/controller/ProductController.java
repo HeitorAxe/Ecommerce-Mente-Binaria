@@ -1,14 +1,10 @@
 package com.compassuol.sp.challenge.ecommerce.product.controller;
 
-import com.compassuol.sp.challenge.ecommerce.exception.ErrorMessage;
+import com.compassuol.sp.challenge.ecommerce.handler.ErrorMessage;
 import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductCreateDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductUpdateDTO;
-import com.compassuol.sp.challenge.ecommerce.product.dto.mapper.PageableMapper;
-import com.compassuol.sp.challenge.ecommerce.product.dto.mapper.ProductMapper;
-import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
-import com.compassuol.sp.challenge.ecommerce.product.repository.projection.ProductProjection;
 import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -16,10 +12,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.persistence.EntityManager;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -47,8 +41,8 @@ public class ProductController {
             })
     @PostMapping
     public ResponseEntity<ProductResponseDTO> createProduct(@Valid @RequestBody ProductCreateDTO createDto){
-        Product product = productService.createProduct(ProductMapper.toProduct(createDto));
-        return  ResponseEntity.status(HttpStatus.CREATED).body(ProductMapper.toDTO(product));
+        ProductResponseDTO product = productService.createProduct(createDto);
+        return  ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
     @Operation(summary = "Get all products as pageable", description = "Retrieve products as pageable",
@@ -58,8 +52,7 @@ public class ProductController {
             })
     @GetMapping("/page")
     public ResponseEntity<PageableDTO> getAllAsPage(@PageableDefault(size = 5)Pageable pageable){
-        Page<ProductProjection> projection = productService.getAllAsPage(pageable);
-        PageableDTO dto = PageableMapper.toDTO(projection);
+        PageableDTO dto = productService.getAllAsPage(pageable);
         return ResponseEntity.ok(dto);
     }
 
@@ -71,8 +64,8 @@ public class ProductController {
             })
     @GetMapping
     public ResponseEntity<List<ProductResponseDTO>> getAll(){
-        List<Product> products = productService.getAll();
-        return ResponseEntity.ok(ProductMapper.toListDTO(products));
+        List<ProductResponseDTO> products = productService.getAll();
+        return ResponseEntity.ok(products);
     }
 
 
@@ -98,8 +91,8 @@ public class ProductController {
             })
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> getById(@PathVariable Long id) {
-        Product product = productService.getById(id);
-        return ResponseEntity.ok(ProductMapper.toDTO(product));
+        ProductResponseDTO product = productService.getById(id);
+        return ResponseEntity.ok(product);
     }
 
     @Operation(summary = "update product by id", description = "No authentication required",
@@ -115,10 +108,8 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> updateProductId(@PathVariable("id") Long id, @Valid @RequestBody ProductUpdateDTO productDto) {
-        Product product = productService.getById(id);
-        ProductMapper.updateByDto(productDto, product);
-        productService.updateProduct(product);
-        return ResponseEntity.ok(ProductMapper.toDTO(product));
+        ProductResponseDTO product = productService.updateProduct(productDto, id);
+        return ResponseEntity.ok(product);
     }
 
 }
