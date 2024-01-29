@@ -1,4 +1,4 @@
-package com.compassuol.sp.challenge.ecommerce.exception;
+package com.compassuol.sp.challenge.ecommerce.handler;
 
 import com.compassuol.sp.challenge.ecommerce.product.exception.ProductNameUniqueViolationException;
 import jakarta.persistence.EntityNotFoundException;

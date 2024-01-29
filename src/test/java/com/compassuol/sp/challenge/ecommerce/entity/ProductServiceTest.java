@@ -154,7 +154,9 @@ class ProductServiceTest {
     }
     @Test
     void updateProduct_WithExistingName_ThrowsException(){
-        when(productRepository.findByName(any())).thenReturn(PRODUCT);
+        Product product = new Product(2L, "TV", "asjkdhaskjdhakshdasd", 100.0);
+        when(productRepository.findByName(any())).thenReturn(product);
+        when(productRepository.findById(anyLong())).thenReturn(Optional.of(PRODUCT_WITH_ID));
         assertThatThrownBy(() -> productService.updateProduct(PRODUCT_UPDATE_DTO, 1L)).isInstanceOf(ProductNameUniqueViolationException.class);
     }
 }
