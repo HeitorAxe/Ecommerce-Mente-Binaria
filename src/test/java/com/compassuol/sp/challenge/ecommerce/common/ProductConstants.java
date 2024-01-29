@@ -47,49 +47,23 @@ public class ProductConstants {
     public static final List<ProductProjection> PRODUCT_PROJECTIONS_EMPTY = new ArrayList<>();
     public static final Pageable PAGEABLE = new Pageable() {
         @Override
-        public int getPageNumber() {
-            return 0;
-        }
-
+        public int getPageNumber() {return 0;}
         @Override
-        public int getPageSize() {
-            return 5;
-        }
-
+        public int getPageSize() {return 5;}
         @Override
-        public long getOffset() {
-            return 0;
-        }
-
+        public long getOffset() {return 0;}
         @Override
-        public Sort getSort() {
-            return Sort.by(Sort.Order.asc("name"));
-        }
-
+        public Sort getSort() {return Sort.by(Sort.Order.asc("name"));}
         @Override
-        public Pageable next() {
-            return null;
-        }
-
+        public Pageable next() {return null;}
         @Override
-        public Pageable previousOrFirst() {
-            return null;
-        }
-
+        public Pageable previousOrFirst() {return null;}
         @Override
-        public Pageable first() {
-            return null;
-        }
-
+        public Pageable first() {return null;}
         @Override
-        public Pageable withPage(int pageNumber) {
-            return null;
-        }
-
+        public Pageable withPage(int pageNumber) {return null;}
         @Override
-        public boolean hasPrevious() {
-            return false;
-        }
+        public boolean hasPrevious() {return false;}
     };
 
 }
