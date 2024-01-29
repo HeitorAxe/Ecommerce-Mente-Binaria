@@ -15,6 +15,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -25,9 +26,9 @@ public class ProductService {
 
     @Transactional
     public ProductResponseDTO createProduct(ProductCreateDTO newProduct) {
-        try{
+        try {
             return ProductMapper.toDTO(productRepository.save(ProductMapper.toProduct(newProduct)));
-        }catch (DataIntegrityViolationException ex){
+        } catch (DataIntegrityViolationException ex) {
             throw new ProductNameUniqueViolationException(String.format("Product with name %s already exists", newProduct.getName()));
         }
     }
@@ -48,24 +49,26 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public PageableDTO getAllAsPage(Pageable pageable){
+    public PageableDTO getAllAsPage(Pageable pageable) {
         return PageableMapper.toDTO(productRepository.findAllAsProjection(pageable));
     }
 
     @Transactional(readOnly = true)
-    public List<ProductResponseDTO> getAll(){
+    public List<ProductResponseDTO> getAll() {
         return ProductMapper.toListDTO(productRepository.findAll());
     }
 
     @Transactional
-    public ProductResponseDTO updateProduct(ProductUpdateDTO productUpdate, Long id){
-        if(productRepository.findByName(productUpdate.getName())!=null)
+    public ProductResponseDTO updateProduct(ProductUpdateDTO productUpdate, Long id) {
+        if (productRepository.findByName(productUpdate.getName()) != null)
             throw new ProductNameUniqueViolationException(
                     String.format("Product with name %s already exists", productUpdate.getName())
             );
+
         Product product = productRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Product id %d not found", id))
         );
+
         ProductMapper.updateByDto(productUpdate, product);
         productRepository.save(product);
         return ProductMapper.toDTO(product);

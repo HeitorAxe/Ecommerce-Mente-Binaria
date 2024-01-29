@@ -5,6 +5,7 @@ import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductUpdateDTO;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import com.compassuol.sp.challenge.ecommerce.product.repository.projection.ProductProjection;
+import lombok.NonNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
@@ -52,16 +53,21 @@ public class ProductConstants {
         public int getPageSize() {return 5;}
         @Override
         public long getOffset() {return 0;}
+        @NonNull
         @Override
         public Sort getSort() {return Sort.by(Sort.Order.asc("name"));}
+        @NonNull
         @Override
-        public Pageable next() {return null;}
+        public Pageable next() {return PAGEABLE;}
         @Override
-        public Pageable previousOrFirst() {return null;}
+        @NonNull
+        public Pageable previousOrFirst() {return PAGEABLE;}
         @Override
-        public Pageable first() {return null;}
+        @NonNull
+        public Pageable first() {return PAGEABLE;}
         @Override
-        public Pageable withPage(int pageNumber) {return null;}
+        @NonNull
+        public Pageable withPage(int pageNumber) {return PAGEABLE;}
         @Override
         public boolean hasPrevious() {return false;}
     };
