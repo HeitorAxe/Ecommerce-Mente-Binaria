@@ -1,5 +1,8 @@
 package com.compassuol.sp.challenge.ecommerce.common;
 
+import com.compassuol.sp.challenge.ecommerce.product.dto.ProductCreateDTO;
+import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
+import com.compassuol.sp.challenge.ecommerce.product.dto.ProductUpdateDTO;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import com.compassuol.sp.challenge.ecommerce.product.repository.projection.ProductProjection;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +14,13 @@ import java.util.List;
 public class ProductConstants {
 
     public static final Product PRODUCT = new Product("TV",  "Tv linda grande e moderna", 2000.00);
+    public static final Product PRODUCT_WITH_ID = new Product(1L, "TV",  "Tv linda grande e moderna", 2000.00);
     public static final Product INVALID_PRODUCT = new Product("", "", 0.0);
+    public static final ProductResponseDTO PRODUCT_RESPONSE_DTO = new ProductResponseDTO(1L, "TV",  "Tv linda grande e moderna", 2000.00);
+    public static final ProductCreateDTO PRODUCT_CREATE_DTO = new ProductCreateDTO("TV",  "Tv linda grande e moderna", 2000.00);
+    public static final ProductCreateDTO INVALID_PRODUCT_CREATE_DTO = new ProductCreateDTO("",  "", 0.0);
+    public static final ProductUpdateDTO PRODUCT_UPDATE_DTO = new ProductUpdateDTO("TV",  "Tv linda grande e moderna", 2000.00);
+
     public static final List<ProductProjection> PRODUCT_PROJECTIONS = new ArrayList<>() {
         {
             add(new ProductProjection() {

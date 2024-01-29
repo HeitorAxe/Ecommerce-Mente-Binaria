@@ -8,12 +8,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -67,7 +67,19 @@ public class ApiExceptionHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ErrorMessage(request, HttpStatus.NOT_FOUND, "The resource you are looking for was not found."));
     }
+    @ExceptionHandler({HttpMessageNotReadableException.class})
+    public ResponseEntity<ErrorMessage> handleMessageNotReadableException(HttpMessageNotReadableException ex, HttpServletRequest request){
+        log.error("API ERROR: ", ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, "JSON body expected."));
+    }
 
-
-
+    @ExceptionHandler({org.hibernate.query.sqm.UnknownPathException.class})
+    public ResponseEntity<ErrorMessage> handleInvalidDataAccessApiUsageException(org.hibernate.query.sqm.UnknownPathException ex, HttpServletRequest request){
+        log.error("API ERROR: ", ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, "Invalid query data."));
+    }
 }

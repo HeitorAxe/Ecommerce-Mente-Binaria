@@ -1,6 +1,8 @@
 package com.compassuol.sp.challenge.ecommerce.entity;
 
 import com.compassuol.sp.challenge.ecommerce.common.ProductConstants;
+import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
+import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import com.compassuol.sp.challenge.ecommerce.product.exception.ProductNameUniqueViolationException;
 import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
@@ -12,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -37,14 +38,20 @@ class ProductServiceTest {
     @Test
     void createProduct_WithValidData_ReturnProduct(){
         when(productRepository.save(ProductConstants.PRODUCT)).thenReturn(ProductConstants.PRODUCT);
-        Product sut = productService.createProduct(ProductConstants.PRODUCT);
-        assertThat(sut).isEqualTo(ProductConstants.PRODUCT);
+        ProductResponseDTO sut = productService.createProduct(PRODUCT_CREATE_DTO);
+        assertThat(sut.getName()).isEqualTo(PRODUCT_RESPONSE_DTO.getName());
 
     }
     @Test
     void createProduct_WithInvalidData_ThrowsException(){
         when(productRepository.save(ProductConstants.INVALID_PRODUCT)).thenThrow(RuntimeException.class);
-        assertThatThrownBy(() -> productService.createProduct(ProductConstants.INVALID_PRODUCT)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> productService.createProduct(INVALID_PRODUCT_CREATE_DTO)).isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void createProduct_ExistingName_ThrowsException(){
+        when(productRepository.save(PRODUCT)).thenThrow(ProductNameUniqueViolationException.class);
+        assertThatThrownBy(() -> productService.createProduct(PRODUCT_CREATE_DTO)).isInstanceOf(ProductNameUniqueViolationException.class);
     }
 
     @Test
@@ -52,10 +59,10 @@ class ProductServiceTest {
 
         Page<ProductProjection> page = new PageImpl<>(PRODUCT_PROJECTIONS, PageRequest.of(0, 10), 1);
         when(productRepository.findAllAsProjection(any())).thenReturn(page);
-        Page<ProductProjection> sut = productService.getAllAsPage(PageRequest.of(0, 10));
-        assertThat(sut).isNotEmpty();
-        assertThat(sut).hasSize(1);
-        assertThat(sut.getContent().get(0).getName()).isEqualTo("Smartphone");
+        PageableDTO sut = productService.getAllAsPage(PAGEABLE);
+        assertThat(sut.getContent()).isNotEmpty();
+        assertThat(sut.getContent()).hasSize(1);
+        assertThat(sut.getContent().get(0)).isEqualTo(PRODUCT_PROJECTIONS.get(0));
     }
     @Test
     void getAllProductsAsList_ReturnsAllProducts(){
@@ -65,7 +72,7 @@ class ProductServiceTest {
             }
         };
         when(productRepository.findAll()).thenReturn(products);
-        List<Product> sut = productService.getAll();
+        List<ProductResponseDTO> sut = productService.getAll();
         assertThat(sut).isNotEmpty();
         assertThat(sut).hasSize(1);
         assertThat(sut.get(0).getName()).isEqualTo(PRODUCT.getName());
@@ -78,16 +85,16 @@ class ProductServiceTest {
     void getAllProductsAsPage_ReturnsNoProducts(){
         Page<ProductProjection> page = new PageImpl<>(PRODUCT_PROJECTIONS_EMPTY, PageRequest.of(0, 10), 1);
         when(productRepository.findAllAsProjection(any())).thenReturn(page);
-        Page<ProductProjection> sut = productService.getAllAsPage(PageRequest.of(0, 10));
-        assertThat(sut).isEmpty();
-        assertThat(sut).hasSize(0);
+        PageableDTO sut = productService.getAllAsPage(PageRequest.of(0, 10));
+        assertThat(sut.getContent()).isEmpty();
+        assertThat(sut.getContent()).hasSize(0);
     }
 
     @Test
     void getAllProductsAsList_ReturnsNoProducts(){
         List<Product> products = new ArrayList<>();
         when(productRepository.findAll()).thenReturn(products);
-        List<Product> sut = productService.getAll();
+        List<ProductResponseDTO> sut = productService.getAll();
         assertThat(sut).isEmpty();
         assertThat(sut).hasSize(0);
     }
@@ -106,9 +113,9 @@ class ProductServiceTest {
         Long productId = 1L;
         Product existingProduct = new Product(1L, "Tv", "Description bem", 1000.0);
         when(productRepository.findById(productId)).thenReturn(Optional.of(existingProduct));
-        Product result = productService.getById(productId);
+        ProductResponseDTO result = productService.getById(productId);
         assertThat(result).isNotNull()
-                .extracting(Product::getId, Product::getName, Product::getDescription, Product::getPrice)
+                .extracting(ProductResponseDTO::getId, ProductResponseDTO::getName, ProductResponseDTO::getDescription, ProductResponseDTO::getPrice)
                 .containsExactly(1L, "Tv", "Description bem", 1000.0);
         verify(productRepository, times(1)).findById(productId);
     }
@@ -130,17 +137,24 @@ class ProductServiceTest {
     }
 
     @Test
+    void updateProduct_WithValidData_ReturnsNewProduct(){
+        when(productRepository.findByName(any())).thenReturn(null);
+        when(productRepository.findById(any())).thenReturn(Optional.of(PRODUCT_WITH_ID));
+        ProductResponseDTO response = productService.updateProduct(PRODUCT_UPDATE_DTO, 1L);
+        assertThat(response.getName()).isEqualTo(PRODUCT_RESPONSE_DTO.getName());
+        assertThat(response.getId()).isEqualTo(PRODUCT_RESPONSE_DTO.getId());
+        assertThat(response.getDescription()).isEqualTo(PRODUCT_RESPONSE_DTO.getDescription());
+        assertThat(response.getPrice()).isEqualTo(PRODUCT_RESPONSE_DTO.getPrice());
+    }
+
+    @Test
     void updateProduct_WithInvalidId() {
-        when(productRepository.findById(anyLong())).thenThrow(EntityNotFoundException.class);
-
-        assertThatThrownBy(() -> productService.getById(1L)).isInstanceOf(EntityNotFoundException.class);
-
-        verify(productRepository).findById(1L);
+        when(productRepository.findById(anyLong())).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> productService.updateProduct(PRODUCT_UPDATE_DTO, 1L)).isInstanceOf(EntityNotFoundException.class);
     }
     @Test
     void updateProduct_WithExistingName_ThrowsException(){
-        when(productRepository.save(PRODUCT)).thenThrow(ProductNameUniqueViolationException.class);
-        assertThatThrownBy(() -> productService.updateProduct(PRODUCT)).isInstanceOf(DataIntegrityViolationException.class);
-
+        when(productRepository.findByName(any())).thenReturn(PRODUCT);
+        assertThatThrownBy(() -> productService.updateProduct(PRODUCT_UPDATE_DTO, 1L)).isInstanceOf(ProductNameUniqueViolationException.class);
     }
 }

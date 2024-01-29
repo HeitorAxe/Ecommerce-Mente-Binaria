@@ -47,8 +47,8 @@ public class ProductController {
             })
     @PostMapping
     public ResponseEntity<ProductResponseDTO> createProduct(@Valid @RequestBody ProductCreateDTO createDto){
-        Product product = productService.createProduct(ProductMapper.toProduct(createDto));
-        return  ResponseEntity.status(HttpStatus.CREATED).body(ProductMapper.toDTO(product));
+        ProductResponseDTO product = productService.createProduct(createDto);
+        return  ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
     @Operation(summary = "Get all products as pageable", description = "Retrieve products as pageable",
@@ -58,8 +58,7 @@ public class ProductController {
             })
     @GetMapping("/page")
     public ResponseEntity<PageableDTO> getAllAsPage(@PageableDefault(size = 5)Pageable pageable){
-        Page<ProductProjection> projection = productService.getAllAsPage(pageable);
-        PageableDTO dto = PageableMapper.toDTO(projection);
+        PageableDTO dto = productService.getAllAsPage(pageable);
         return ResponseEntity.ok(dto);
     }
 
@@ -71,8 +70,8 @@ public class ProductController {
             })
     @GetMapping
     public ResponseEntity<List<ProductResponseDTO>> getAll(){
-        List<Product> products = productService.getAll();
-        return ResponseEntity.ok(ProductMapper.toListDTO(products));
+        List<ProductResponseDTO> products = productService.getAll();
+        return ResponseEntity.ok(products);
     }
 
 
@@ -98,8 +97,8 @@ public class ProductController {
             })
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> getById(@PathVariable Long id) {
-        Product product = productService.getById(id);
-        return ResponseEntity.ok(ProductMapper.toDTO(product));
+        ProductResponseDTO product = productService.getById(id);
+        return ResponseEntity.ok(product);
     }
 
     @Operation(summary = "update product by id", description = "No authentication required",
@@ -115,10 +114,8 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> updateProductId(@PathVariable("id") Long id, @Valid @RequestBody ProductUpdateDTO productDto) {
-        Product product = productService.getById(id);
-        ProductMapper.updateByDto(productDto, product);
-        productService.updateProduct(product);
-        return ResponseEntity.ok(ProductMapper.toDTO(product));
+        ProductResponseDTO product = productService.updateProduct(productDto, id);
+        return ResponseEntity.ok(product);
     }
 
 }
