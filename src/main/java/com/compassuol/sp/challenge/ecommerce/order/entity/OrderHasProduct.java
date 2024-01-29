@@ -3,16 +3,14 @@ package com.compassuol.sp.challenge.ecommerce.order.entity;
 
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@ToString
 @Table(name = "order_has_products")
 public class OrderHasProduct{
     @Id
@@ -20,7 +18,7 @@ public class OrderHasProduct{
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id_order", nullable = false)
+    @JoinColumn(name = "order_id")
     private Order order;
 
     @ManyToOne

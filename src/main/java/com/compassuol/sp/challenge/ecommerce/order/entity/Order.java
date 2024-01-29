@@ -3,19 +3,18 @@ package com.compassuol.sp.challenge.ecommerce.order.entity;
 import com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus;
 import com.compassuol.sp.challenge.ecommerce.order.enums.PaymentMethod;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Entity
 @Table(name = "orders")
 public class Order implements Serializable {
@@ -35,14 +34,17 @@ public class Order implements Serializable {
     @Column(name = "order_status", nullable = false)
     private OrderStatus orderStatus = OrderStatus.CONFIRMED;
 
-    @Column(name = "has_discount", nullable = false)
+    //@Column(name = "has_discount", nullable = false)
     private boolean hasDiscount = false;
 
-    @Column(name = "total_value", nullable = false)
+    //@Column(name = "total_value", nullable = false)
     private Double totalValue;
 
-    @Column(name = "subtotal_value", nullable = false)
+    //@Column(name = "subtotal_value", nullable = false)
     private Double subTotalValue;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderHasProduct> products;
 
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
@@ -54,4 +56,6 @@ public class Order implements Serializable {
 
     @Column(name = "cancel_reason")
     private  String cancelReason;
+
+
 }

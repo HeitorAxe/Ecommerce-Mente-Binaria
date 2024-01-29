@@ -3,18 +3,28 @@ package com.compassuol.sp.challenge.ecommerce.order.controller;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderCreateDTO;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderUpdateDTO;
+import com.compassuol.sp.challenge.ecommerce.order.service.OrderService;
 import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
+import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
+@RestController
+@RequestMapping("/orders")
+@RequiredArgsConstructor
 public class OrderController {
-    public ResponseEntity<ProductResponseDTO> createOrder(@Valid @RequestBody OrderCreateDTO createDto){
-        return null;
+
+    private final OrderService orderService;
+    @PostMapping
+    public ResponseEntity<OrderResponseDTO> createOrder(@RequestBody OrderCreateDTO createDto){
+        OrderResponseDTO order = orderService.createOrder(createDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
 
     public ResponseEntity<PageableDTO> getAllAsPage(@PageableDefault(size = 5) Pageable pageable){
