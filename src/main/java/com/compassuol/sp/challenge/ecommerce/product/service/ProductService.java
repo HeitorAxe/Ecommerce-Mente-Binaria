@@ -60,15 +60,14 @@ public class ProductService {
 
     @Transactional
     public ProductResponseDTO updateProduct(ProductUpdateDTO productUpdate, Long id) {
-        if (productRepository.findByName(productUpdate.getName()) != null)
-            throw new ProductNameUniqueViolationException(
-                    String.format("Product with name %s already exists", productUpdate.getName())
-            );
-
         Product product = productRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Product id %d not found", id))
         );
-
+        Product existing = productRepository.findByName(productUpdate.getName());
+        if (existing != null && !existing.getId().equals(product.getId()))
+            throw new ProductNameUniqueViolationException(
+                    String.format("Product with name %s already exists", productUpdate.getName())
+            );
         ProductMapper.updateByDto(productUpdate, product);
         productRepository.save(product);
         return ProductMapper.toDTO(product);

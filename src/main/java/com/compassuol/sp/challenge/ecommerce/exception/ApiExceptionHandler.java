@@ -72,7 +72,7 @@ public class ApiExceptionHandler {
         log.error("API ERROR: ", ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, "JSON body expected."));
+                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, "Invalid Data."));
     }
 
     @ExceptionHandler({org.hibernate.query.sqm.UnknownPathException.class})
