@@ -16,6 +16,7 @@ public class OrderMapper {
 
     public static Order toOrder(OrderCreateDTO dto) {
         ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setSkipNullEnabled(true);
         mapper.addMappings(new PropertyMap<OrderHasProductDTO, OrderHasProduct>() {
             protected void configure() {skip(destination.getId());}
         });
@@ -25,6 +26,7 @@ public class OrderMapper {
 
     public static OrderResponseDTO toDTO(Order order) {
         ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setSkipNullEnabled(true);
         return mapper.map(order, OrderResponseDTO.class);
     }
 }
