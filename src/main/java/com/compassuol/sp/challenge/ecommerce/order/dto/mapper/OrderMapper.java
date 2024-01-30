@@ -7,6 +7,9 @@ import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.apache.commons.io.IOUtils.skip;
 
 public class OrderMapper {
@@ -28,6 +31,7 @@ public class OrderMapper {
         return mapper.map(order, OrderResponseDTO.class);
     }
 
+
     public static Order toCancelOrder(OrderDeleteDTO dto) {
         ModelMapper mapper = new ModelMapper();
         mapper.addMappings(new PropertyMap<OrderHasProductDTO, OrderHasProduct>() {
@@ -38,6 +42,11 @@ public class OrderMapper {
     public static OrderResponseDeleteDTO toDtoDelete(Order order) {
         ModelMapper mapper = new ModelMapper();
         return mapper.map(order, OrderResponseDeleteDTO.class);
+    }
+
+
+    public static List<OrderResponseDTO> toListDto(List<Order> orders) {
+        return orders.stream().map(order-> toDTO(order)).collect(Collectors.toList());
     }
 
 }

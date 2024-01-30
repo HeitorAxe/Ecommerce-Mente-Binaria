@@ -19,6 +19,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -57,6 +58,9 @@ public class OrderService {
         orderRepository.save(order);
         return OrderMapper.toDTO(order);
     }
+    public List<Order> getAll() {
+        return orderRepository.findAll();
+    }
 
     @Transactional
     public OrderResponseDeleteDTO removeOrder(Long id, OrderDeleteDTO deleteDto) {
@@ -78,5 +82,5 @@ public class OrderService {
             );
         }
         return OrderMapper.toDtoDelete(order);
+
     }
-}
