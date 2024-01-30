@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.SENT;
+
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -41,5 +43,11 @@ public class OrderService {
         }
         orderRepository.save(order);
         return OrderMapper.toDTO(order);
+    }
+
+    public void removeOrder(Long id, OrderResponseDTO dto) {
+        if (dto.getPaymentMethod() == SENT && dto.get) {
+
+        }
     }
 }
