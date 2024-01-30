@@ -1,8 +1,6 @@
 package com.compassuol.sp.challenge.ecommerce.order.dto.mapper;
 
-import com.compassuol.sp.challenge.ecommerce.order.dto.OrderCreateDTO;
-import com.compassuol.sp.challenge.ecommerce.order.dto.OrderHasProductDTO;
-import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
+import com.compassuol.sp.challenge.ecommerce.order.dto.*;
 import com.compassuol.sp.challenge.ecommerce.order.entity.Order;
 import com.compassuol.sp.challenge.ecommerce.order.entity.OrderHasProduct;
 import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
@@ -29,4 +27,17 @@ public class OrderMapper {
         mapper.getConfiguration().setSkipNullEnabled(true);
         return mapper.map(order, OrderResponseDTO.class);
     }
+
+    public static Order toCancelOrder(OrderDeleteDTO dto) {
+        ModelMapper mapper = new ModelMapper();
+        mapper.addMappings(new PropertyMap<OrderHasProductDTO, OrderHasProduct>() {
+            protected void configure() {skip(destination.getId());}
+        });
+        return mapper.map(dto, Order.class);
+    }
+    public static OrderResponseDeleteDTO toDtoDelete(Order order) {
+        ModelMapper mapper = new ModelMapper();
+        return mapper.map(order, OrderResponseDeleteDTO.class);
+    }
+
 }

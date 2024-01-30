@@ -1,9 +1,7 @@
 package com.compassuol.sp.challenge.ecommerce.order.service;
 
 import com.compassuol.sp.challenge.ecommerce.order.consumer.ViaCepConsumerFeign;
-import com.compassuol.sp.challenge.ecommerce.order.dto.OrderCreateDTO;
-import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
-import com.compassuol.sp.challenge.ecommerce.order.dto.ViaCepResponseDTO;
+import com.compassuol.sp.challenge.ecommerce.order.dto.*;
 import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.OrderMapper;
 import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.ViaCepResponseMapper;
 import com.compassuol.sp.challenge.ecommerce.order.entity.Order;
@@ -14,14 +12,18 @@ import com.compassuol.sp.challenge.ecommerce.order.repository.OrderRepository;
 import com.compassuol.sp.challenge.ecommerce.product.dto.mapper.ProductMapper;
 import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
 import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.CANCELED;
 import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.SENT;
 
 @Service
@@ -54,9 +56,18 @@ public class OrderService {
         return OrderMapper.toDTO(order);
     }
 
-    public void removeOrder(Long id, OrderResponseDTO dto) {
-        if (dto.getPaymentMethod() == SENT && dto.get) {
+    @Transactional
+    public OrderResponseDeleteDTO removeOrder(Long id, OrderDeleteDTO deleteDto) {
+        Order order = orderRepository.findById(id).orElseThrow(
+                () -> new RuntimeException(String.format("Order id %d not found", id))
+        );
+        LocalDateTime purchasePeriod = order.getCreationDate().plusDays(90);
+        if (order.getOrderStatus() == SENT && order.getCreationDate().isAfter(purchasePeriod)) {
+            order.setOrderStatus(CANCELED);
+            order.setCancelationDate(LocalDateTime.now());
+            order.setCancelReason(deleteDto.getCancelReason());
+            return OrderMapper.toDtoDelete(order);
+        }else return null; // possivelmente retornará uma exceção
 
-        }
     }
 }
