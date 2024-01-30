@@ -64,12 +64,6 @@ public class Order implements Serializable {
     @Column(name = "cancel_reason")
     private  String cancelReason;
 
-//    public void updateValues(){
-//        subTotalValue=0.0;
-//        for (OrderHasProduct orderProduct:products)
-//            subTotalValue+=orderProduct.getProduct().getPrice();
-//        totalValue = subTotalValue - (subTotalValue/100.0)*5.0;
-//    }
 
 
 }

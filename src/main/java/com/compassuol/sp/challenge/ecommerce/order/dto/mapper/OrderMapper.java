@@ -4,10 +4,15 @@ import com.compassuol.sp.challenge.ecommerce.order.dto.*;
 import com.compassuol.sp.challenge.ecommerce.order.entity.Address;
 import com.compassuol.sp.challenge.ecommerce.order.entity.Order;
 import com.compassuol.sp.challenge.ecommerce.order.enums.PaymentMethod;
+import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.io.IOUtils.skip;
@@ -25,19 +30,27 @@ public class OrderMapper {
 
     public static OrderResponseDTO toDTO(Order order) {
         ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setSkipNullEnabled(true);
-        return mapper.map(order, OrderResponseDTO.class);
+        OrderResponseDTO orderResponseDTO = mapper.map(order, OrderResponseDTO.class);
+        Set<Product> uniqueProducts = new HashSet<>(order.getProducts());
+        List<OrderHasProductDTO> orderHasProductDTOList = uniqueProducts.stream()
+                .map(product -> new OrderHasProductDTO(product.getId(), countProductsInOrder(order, product)))
+                .collect(Collectors.toList());
+        orderResponseDTO.setProducts(orderHasProductDTOList);
+        return orderResponseDTO;
     }
+    private static int countProductsInOrder(Order order, Product product) {
+        return (int) order.getProducts().stream().filter(p -> p.equals(product)).count();
+    }
+
 
     public static OrderResponseDeleteDTO toDtoDelete(Order order) {
         ModelMapper mapper = new ModelMapper();
-        //contar produtos na lista
         return mapper.map(order, OrderResponseDeleteDTO.class);
     }
 
 
     public static List<OrderResponseDTO> toListDto(List<Order> orders) {
-        return orders.stream().map(order-> toDTO(order)).collect(Collectors.toList());
+        return orders.stream().map(order -> toDTO(order)).collect(Collectors.toList());
     }
 
 }
