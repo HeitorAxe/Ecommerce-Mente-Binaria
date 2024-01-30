@@ -34,19 +34,19 @@ public class Order implements Serializable {
     @Column(name = "order_status", nullable = false)
     private OrderStatus orderStatus = OrderStatus.CONFIRMED;
 
-    //@Column(name = "has_discount", nullable = false)
+    @Column(name = "has_discount", nullable = false)
     private boolean hasDiscount = false;
 
-    //@Column(name = "total_value", nullable = false)
+    @Column(name = "total_value")
     private Double totalValue;
 
-    //@Column(name = "subtotal_value", nullable = false)
+    @Column(name = "subtotal_value")
     private Double subTotalValue;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderHasProduct> products;
 
-    @Column(name = "creation_date")
+    @Column(name = "creation_date", nullable = false)
     private LocalDateTime creationDate;
 
     //nullable until cancelation

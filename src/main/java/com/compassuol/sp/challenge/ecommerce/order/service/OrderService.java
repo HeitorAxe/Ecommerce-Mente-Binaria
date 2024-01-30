@@ -36,12 +36,16 @@ public class OrderService {
         order.setCreationDate(LocalDateTime.now());
         ViaCepResponseDTO viaCepResponse = viaCepConsumerFeign.getAddressByPostalCode(order.getAddress().getPostalCode());
         ViaCepResponseMapper.complementAddress(viaCepResponse, order.getAddress());
+        List<OrderHasProduct> products = new ArrayList<>(order.getProducts());
+        order.setProducts(new ArrayList<>());
         addressRepository.save(order.getAddress());
         orderRepository.save(order);
         for(OrderHasProduct orderHasProduct: order.getProducts()){
             orderHasProduct.setOrder(order);
             orderHasProduct.setProduct(productRepository.findById(orderHasProduct.getProduct().getId()).orElseThrow());
+            order.getProducts().add(orderHasProduct);
         }
+        orderRepository.save(order);
         return OrderMapper.toDTO(order);
     }
 }
