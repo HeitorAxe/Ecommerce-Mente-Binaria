@@ -47,6 +47,7 @@ public class OrderService {
             ));
             order.getProducts().add(orderHasProduct);
         }
+        order.updateValues();
         orderRepository.save(order);
         return OrderMapper.toDTO(order);
     }
