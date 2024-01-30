@@ -17,6 +17,7 @@ import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -53,10 +54,14 @@ public class OrderService {
         orderRepository.save(order);
         return OrderMapper.toDTO(order);
     }
+    public List<Order> getAll() {
+        return orderRepository.findAll();
+    }
 
-    public void removeOrder(Long id, OrderResponseDTO dto) {
+
+
+    /*public void removeOrder(Long id, OrderResponseDTO dto) {
         if (dto.getPaymentMethod() == SENT && dto.get) {
 
-        }
+        }*/
     }
-}
