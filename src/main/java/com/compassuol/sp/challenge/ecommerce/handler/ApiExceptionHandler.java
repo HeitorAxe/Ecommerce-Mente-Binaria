@@ -1,5 +1,7 @@
 package com.compassuol.sp.challenge.ecommerce.handler;
 
+
+import com.compassuol.sp.challenge.ecommerce.order.exception.OrderStatusNotAuthorizedException;
 import com.compassuol.sp.challenge.ecommerce.product.exception.ProductNameUniqueViolationException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,6 +53,13 @@ public class ApiExceptionHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ErrorMessage(request, HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage()));
     }
+    @ExceptionHandler({OrderStatusNotAuthorizedException.class})
+    public ResponseEntity<ErrorMessage> handleNotAuthorizationStatus(OrderStatusNotAuthorizedException ex, HttpServletRequest request){
+        log.error("API ERROR: ", ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, ex.getMessage()));
+    }
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
     public ResponseEntity<ErrorMessage> handleMethodTypeMismatch(MethodArgumentTypeMismatchException ex, HttpServletRequest request){
@@ -82,4 +91,5 @@ public class ApiExceptionHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, "Invalid query data."));
     }
+
 }
