@@ -15,18 +15,18 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    //@Column(name = "number", nullable = false)
+    @Column(name = "number", nullable = false)
     private Integer number;
     @Column(name = "complement")
     private String complement;
-   // @Column(name = "postal_code", nullable = false)
+   @Column(name = "postal_code", nullable = false)
     private String postalCode;
 
-    //@Column(name = "city", nullable = false)
+    @Column(name = "city", nullable = false)
     private String city;
-    //@Column(name = "street", nullable = false)
+    @Column(name = "street", nullable = false)
     private String street;
-    //@Column(name = "state", nullable = false)
+    @Column(name = "state", nullable = false)
     private String state;
 
 }
