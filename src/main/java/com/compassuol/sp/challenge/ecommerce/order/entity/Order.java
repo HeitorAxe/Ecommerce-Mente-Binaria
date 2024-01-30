@@ -2,12 +2,14 @@ package com.compassuol.sp.challenge.ecommerce.order.entity;
 
 import com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus;
 import com.compassuol.sp.challenge.ecommerce.order.enums.PaymentMethod;
+import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -43,8 +45,13 @@ public class Order implements Serializable {
     @Column(name = "subtotal_value")
     private Double subTotalValue;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderHasProduct> products;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "order_product",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private List<Product> products = new ArrayList<>();
 
     @Column(name = "creation_date", nullable = false)
     private LocalDateTime creationDate;
@@ -57,12 +64,12 @@ public class Order implements Serializable {
     @Column(name = "cancel_reason")
     private  String cancelReason;
 
-    public void updateValues(){
-        subTotalValue=0.0;
-        for (OrderHasProduct orderProduct:products)
-            subTotalValue+=orderProduct.getProduct().getPrice();
-        totalValue = subTotalValue - (subTotalValue/100.0)*5.0;
-    }
+//    public void updateValues(){
+//        subTotalValue=0.0;
+//        for (OrderHasProduct orderProduct:products)
+//            subTotalValue+=orderProduct.getProduct().getPrice();
+//        totalValue = subTotalValue - (subTotalValue/100.0)*5.0;
+//    }
 
 
 }

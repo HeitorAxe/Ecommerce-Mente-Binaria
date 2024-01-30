@@ -3,11 +3,9 @@ package com.compassuol.sp.challenge.ecommerce.order.dto.mapper;
 import com.compassuol.sp.challenge.ecommerce.order.dto.*;
 import com.compassuol.sp.challenge.ecommerce.order.entity.Address;
 import com.compassuol.sp.challenge.ecommerce.order.entity.Order;
-import com.compassuol.sp.challenge.ecommerce.order.entity.OrderHasProduct;
 import com.compassuol.sp.challenge.ecommerce.order.enums.PaymentMethod;
 import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -49,7 +49,6 @@ public class OrderController {
         List<Order> orders = orderService.getAll();
         return ResponseEntity.ok(OrderMapper.toListDto(orders));
     }
-}
 
     @GetMapping("/{id}")
     public ResponseEntity<OrderResponseDTO> getById(@PathVariable Long id) {
@@ -58,7 +57,7 @@ public class OrderController {
         }
         OrderResponseDTO order = orderService.getbyId(id);
         return ResponseEntity.ok(order);
-        return null;
+
     }
     @Operation(summary = "Cancel order with cancel reason", description = "Clients can cancel the order",
             responses = {
@@ -93,4 +92,4 @@ public class OrderController {
 
     }*/
 
-  
+}
