@@ -6,9 +6,12 @@ import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.OrderMapper;
 import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.ViaCepResponseMapper;
 import com.compassuol.sp.challenge.ecommerce.order.entity.Order;
 
+import com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus;
+import com.compassuol.sp.challenge.ecommerce.order.enums.PaymentMethod;
 import com.compassuol.sp.challenge.ecommerce.order.exception.OrderStatusNotAuthorizedException;
 import com.compassuol.sp.challenge.ecommerce.order.repository.AddressRepository;
 import com.compassuol.sp.challenge.ecommerce.order.repository.OrderRepository;
+import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.*;
@@ -76,5 +80,18 @@ public class OrderService {
         }
         return OrderMapper.toDtoDelete(order);
 
+    }
+
+    public OrderResponseDTO updateOrder(Long id, OrderUpdateDTO orderDto) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Order not found with id: " + id));
+        if (orderDto.getPaymentMethod() != null) {
+            order.setPaymentMethod(PaymentMethod.valueOf(orderDto.getPaymentMethod()));
+        }
+        if (orderDto.getOrderStatus() != null) {
+            order.setOrderStatus(OrderStatus.valueOf(orderDto.getOrderStatus()));
+        }
+        Order updatedOrder = orderRepository.save(order);
+        return OrderMapper.toDTO(updatedOrder);
     }
 }
