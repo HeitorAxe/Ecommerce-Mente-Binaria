@@ -44,12 +44,12 @@ public class OrderController {
                     @ApiResponse(responseCode = "200", description = "Resource retrieved successfully",
                             content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ProductResponseDTO.class))),
                     @ApiResponse(responseCode = "400", description = "Poorly formatted resource or no reason message",
-                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ProductResponseDTO.class))),
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ErrorMessage.class))),
                     @ApiResponse(responseCode = "404", description = "Resource not found",
                             content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ErrorMessage.class)))
             })
     @DeleteMapping("/{id}")
-    public ResponseEntity<OrderResponseDeleteDTO> deleteOrder(@PathVariable("id") Long id, OrderDeleteDTO deleteDto){
+    public ResponseEntity<OrderResponseDeleteDTO> deleteOrder(@PathVariable("id") Long id, @RequestBody OrderDeleteDTO deleteDto){
         OrderResponseDeleteDTO order = orderService.removeOrder(id, deleteDto);
         return ResponseEntity.status(HttpStatus.OK).body(order);
     }

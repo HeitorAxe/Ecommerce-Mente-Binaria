@@ -17,6 +17,7 @@ public class OrderResponseDeleteDTO {
 
     private Double totalValue;
     private Double subTotalValue;
+    private String orderStatus;
     private LocalDateTime creationDate;
     private LocalDateTime cancelationDate;
     private String cancelReason;
