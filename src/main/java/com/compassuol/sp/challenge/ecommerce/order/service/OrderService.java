@@ -30,16 +30,13 @@ public class OrderService {
     @Transactional
     public OrderResponseDTO createOrder(OrderCreateDTO createDto) {
         Order order = OrderMapper.toOrder(createDto);
-        List<OrderHasProduct> products = new ArrayList<>(order.getProducts());
-        order.setProducts(new ArrayList<>());
         addressRepository.save(order.getAddress());
         orderRepository.save(order);
-        for(OrderHasProduct orderHasProduct:products){
+        for(OrderHasProduct orderHasProduct: order.getProducts()){
             orderHasProduct.setOrder(order);
             orderHasProduct.setProduct(productRepository.findById(orderHasProduct.getProduct().getId()).orElseThrow());
-            order.getProducts().add(orderHasProduct);
+            System.out.println(orderHasProduct.getProduct());
         }
-        orderRepository.save(order);
         return OrderMapper.toDTO(order);
     }
 }
