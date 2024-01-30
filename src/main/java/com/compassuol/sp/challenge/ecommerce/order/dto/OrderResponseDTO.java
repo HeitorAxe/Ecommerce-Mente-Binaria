@@ -17,7 +17,7 @@ public class OrderResponseDTO {
     List<OrderHasProductDTO> products;
     private AddressDTO address;
     private String paymentMethod;
-
+    private String orderStatus;
     private Double totalValue;
     private Double subTotalValue;
     private LocalDateTime creationDate;
