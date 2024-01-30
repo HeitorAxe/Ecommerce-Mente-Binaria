@@ -39,10 +39,13 @@ public class OrderController {
     public ResponseEntity<OrderResponseDTO> getById(@PathVariable Long id) {
         return null;
     }
-    @Operation(summary = "Delete a order with ", description = "No authentication required",
+    @Operation(summary = "Cancel order with cancel reason", description = "Clients can cancel the order",
             responses = {
-                    @ApiResponse(responseCode = "204", description = "Product deleted successfully"),
-                    @ApiResponse(responseCode = "404", description = "Product not found",
+                    @ApiResponse(responseCode = "200", description = "Resource retrieved successfully",
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ProductResponseDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Poorly formatted resource or no reason message",
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ProductResponseDTO.class))),
+                    @ApiResponse(responseCode = "404", description = "Resource not found",
                             content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ErrorMessage.class)))
             })
     @DeleteMapping("/{id}")
