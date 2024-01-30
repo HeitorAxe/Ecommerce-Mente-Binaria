@@ -7,6 +7,7 @@ import com.compassuol.sp.challenge.ecommerce.order.service.OrderService;
 import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
 import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
+import jakarta.persistence.PreRemove;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -33,13 +34,13 @@ public class OrderController {
     }
 
     public ResponseEntity<OrderResponseDTO> getById(@PathVariable Long id) {
-        return null;
 
     }
 
-    public ResponseEntity<Void> deleteOrder(@PathVariable("id") Long id){
-        return null;
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<OrderResponseDTO> deleteOrder(@PathVariable("id") Long id, @RequestBody OrderResponseDTO orderResponseDTO){
+        orderService.removeOrder(id);
+        return ResponseEntity.status(HttpStatus.OK).body(orderResponseDTO);
     }
 
 
