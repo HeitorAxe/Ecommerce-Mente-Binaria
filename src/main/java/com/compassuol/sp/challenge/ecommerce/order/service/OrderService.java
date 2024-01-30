@@ -14,6 +14,7 @@ import com.compassuol.sp.challenge.ecommerce.order.repository.OrderRepository;
 import com.compassuol.sp.challenge.ecommerce.product.dto.mapper.ProductMapper;
 import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
 import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -50,5 +52,12 @@ public class OrderService {
         order.updateValues();
         orderRepository.save(order);
         return OrderMapper.toDTO(order);
+    }
+    @Transactional
+    public OrderResponseDTO getbyId(Long id) {
+    Order order = orderRepository.findById(id).orElseThrow(
+            () -> new EntityNotFoundException(String.format("Order %d not found", id))
+    );
+    return OrderMapper.toDTO(order);
     }
 }
