@@ -40,9 +40,11 @@ public class OrderService {
         order.setProducts(new ArrayList<>());
         addressRepository.save(order.getAddress());
         orderRepository.save(order);
-        for(OrderHasProduct orderHasProduct: order.getProducts()){
+        for(OrderHasProduct orderHasProduct: products){
             orderHasProduct.setOrder(order);
-            orderHasProduct.setProduct(productRepository.findById(orderHasProduct.getProduct().getId()).orElseThrow());
+            orderHasProduct.setProduct(productRepository.findById(orderHasProduct.getProduct().getId()).orElseThrow(
+                    () -> new RuntimeException("Produto não encontrado")
+            ));
             order.getProducts().add(orderHasProduct);
         }
         orderRepository.save(order);
