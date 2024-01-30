@@ -1,6 +1,6 @@
 package com.compassuol.sp.challenge.ecommerce.order.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,14 +10,16 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class AddressDTO {
-    private int number;
-    private String complement;
+public class ViaCepResponseDTO {
+    @JsonProperty("cep")
     private String postalCode;
 
-    private String city;
+    @JsonProperty("logradouro")
     private String street;
-    private String state;
 
+    @JsonProperty("localidade")
+    private String city;
+
+    @JsonProperty("uf")
+    private String state;
 }
