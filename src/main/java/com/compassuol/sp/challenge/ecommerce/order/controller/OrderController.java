@@ -1,12 +1,15 @@
 package com.compassuol.sp.challenge.ecommerce.order.controller;
 
-import com.compassuol.sp.challenge.ecommerce.order.dto.OrderCreateDTO;
-import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
-import com.compassuol.sp.challenge.ecommerce.order.dto.OrderUpdateDTO;
+import com.compassuol.sp.challenge.ecommerce.handler.ErrorMessage;
+import com.compassuol.sp.challenge.ecommerce.order.dto.*;
 import com.compassuol.sp.challenge.ecommerce.order.service.OrderService;
 import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
 import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.persistence.PreRemove;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,15 +37,19 @@ public class OrderController {
     }
 
     public ResponseEntity<OrderResponseDTO> getById(@PathVariable Long id) {
-
+        return null;
     }
-
+    @Operation(summary = "Delete a order with ", description = "No authentication required",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Product deleted successfully"),
+                    @ApiResponse(responseCode = "404", description = "Product not found",
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ErrorMessage.class)))
+            })
     @DeleteMapping("/{id}")
-    public ResponseEntity<OrderResponseDTO> deleteOrder(@PathVariable("id") Long id, @RequestBody OrderResponseDTO orderResponseDTO){
-        orderService.removeOrder(id);
-        return ResponseEntity.status(HttpStatus.OK).body(orderResponseDTO);
+    public ResponseEntity<OrderResponseDeleteDTO> deleteOrder(@PathVariable("id") Long id, OrderDeleteDTO deleteDto){
+        OrderResponseDeleteDTO order = orderService.removeOrder(id, deleteDto);
+        return ResponseEntity.status(HttpStatus.OK).body(order);
     }
-
 
     public ResponseEntity<ProductResponseDTO> updateOrderId(@PathVariable("id") Long id, @Valid @RequestBody OrderUpdateDTO orderDto) {
         return null;
