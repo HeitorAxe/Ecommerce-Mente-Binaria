@@ -9,6 +9,9 @@ import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.apache.commons.io.IOUtils.skip;
 
 public class OrderMapper {
@@ -28,5 +31,8 @@ public class OrderMapper {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setSkipNullEnabled(true);
         return mapper.map(order, OrderResponseDTO.class);
+    }
+    public static List<OrderResponseDTO> toListDto(List<Order> orders) {
+        return orders.stream().map(order-> toDTO(order)).collect(Collectors.toList());
     }
 }

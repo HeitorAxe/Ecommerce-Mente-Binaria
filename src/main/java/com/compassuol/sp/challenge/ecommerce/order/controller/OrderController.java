@@ -3,7 +3,6 @@ package com.compassuol.sp.challenge.ecommerce.order.controller;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderCreateDTO;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderUpdateDTO;
-import com.compassuol.sp.challenge.ecommerce.order.entity.Order;
 import com.compassuol.sp.challenge.ecommerce.order.service.OrderService;
 import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
@@ -15,8 +14,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/orders")
@@ -35,13 +32,9 @@ public class OrderController {
 
     }
 
-    @GetMapping("/{id}")
     public ResponseEntity<OrderResponseDTO> getById(@PathVariable Long id) {
-        if(id < 0){
-            return ResponseEntity.badRequest().build();
-        }
-        OrderResponseDTO order = orderService.getbyId(id);
-        return ResponseEntity.ok(order);
+        return null;
+
     }
 
     public ResponseEntity<Void> deleteOrder(@PathVariable("id") Long id){
