@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Objects;
 
 import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.*;
@@ -58,6 +59,15 @@ public class OrderService {
         orderRepository.save(order);
         return OrderMapper.toDTO(order);
     }
+
+    @Transactional
+    public OrderResponseDTO getbyId(Long id) {
+    Order order = orderRepository.findById(id).orElseThrow(
+            () -> new EntityNotFoundException(String.format("Order %d not found", id))
+    );
+    return OrderMapper.toDTO(order);
+    }
+
     public List<Order> getAll() {
         return orderRepository.findAll();
     }

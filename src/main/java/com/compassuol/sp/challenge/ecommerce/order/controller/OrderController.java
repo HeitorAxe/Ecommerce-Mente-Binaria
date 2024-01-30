@@ -24,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,7 +51,13 @@ public class OrderController {
     }
 }
 
+    @GetMapping("/{id}")
     public ResponseEntity<OrderResponseDTO> getById(@PathVariable Long id) {
+        if(id < 0){
+            return ResponseEntity.badRequest().build();
+        }
+        OrderResponseDTO order = orderService.getbyId(id);
+        return ResponseEntity.ok(order);
         return null;
     }
     @Operation(summary = "Cancel order with cancel reason", description = "Clients can cancel the order",
