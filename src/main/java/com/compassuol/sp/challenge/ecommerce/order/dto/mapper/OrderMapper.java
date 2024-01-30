@@ -13,18 +13,17 @@ import static org.apache.commons.io.IOUtils.skip;
 
 public class OrderMapper {
     ProductService productService;
-    public static Order toOrder(OrderCreateDTO dto){
+
+    public static Order toOrder(OrderCreateDTO dto) {
         ModelMapper mapper = new ModelMapper();
         mapper.addMappings(new PropertyMap<OrderHasProductDTO, OrderHasProduct>() {
-            protected void configure() {
-                skip(destination.getId());
-            }
+            protected void configure() {skip(destination.getId());}
         });
         Order order = mapper.map(dto, Order.class);
         return order;
     }
 
-    public static OrderResponseDTO toDTO(Order order){
+    public static OrderResponseDTO toDTO(Order order) {
         ModelMapper mapper = new ModelMapper();
         return mapper.map(order, OrderResponseDTO.class);
     }
