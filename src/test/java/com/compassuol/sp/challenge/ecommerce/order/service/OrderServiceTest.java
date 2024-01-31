@@ -59,6 +59,7 @@ class OrderServiceTest {
         assertThat(sut.getCancelationDate()).isNotNull();
         assertThat(sut.getCancelReason()).isEqualTo("Não gostei do produto");
     }
+
     @Test
     void removeOrder_WithInvalidOrderStatus_DoesThrowOrderStatusNotAuthorized() {
         OrderDeleteDTO delete = new OrderDeleteDTO("Não gostei do produto");
