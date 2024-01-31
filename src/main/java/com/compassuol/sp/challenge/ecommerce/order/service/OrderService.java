@@ -71,11 +71,11 @@ public class OrderService {
                 order.setCancelReason(deleteDto.getCancelReason());
         } else if (order.getOrderStatus() != CONFIRMED) {
             throw new OrderStatusNotAuthorizedException(
-                    "O status do pedido deve ser diferente de SENT"
+                    "The order status should be different from SENT."
             );
         }else if (LocalDateTime.now().isAfter(purchasePeriod)){
             throw new OrderStatusNotAuthorizedException(
-                    "O cancelamento do pedido só pode ser feito antes de 90 dias da compra"
+                    "Cancellation of the order can only be done within 90 days of purchase."
             );
         }
         return OrderMapper.toDtoDelete(order);
