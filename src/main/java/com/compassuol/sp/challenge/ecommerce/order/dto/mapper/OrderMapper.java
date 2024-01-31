@@ -42,13 +42,6 @@ public class OrderMapper {
         return (int) order.getProducts().stream().filter(p -> p.equals(product)).count();
     }
 
-
-    public static OrderResponseDeleteDTO toDtoDelete(Order order) {
-        ModelMapper mapper = new ModelMapper();
-        return mapper.map(order, OrderResponseDeleteDTO.class);
-    }
-
-
     public static List<OrderResponseDTO> toListDto(List<Order> orders) {
         return orders.stream().map(order -> toDTO(order)).collect(Collectors.toList());
     }

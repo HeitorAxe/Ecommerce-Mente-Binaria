@@ -65,22 +65,10 @@ public class OrderController {
                             content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ErrorMessage.class)))
             })
     @DeleteMapping("/{id}")
-    public ResponseEntity<OrderResponseDeleteDTO> deleteOrder(@PathVariable("id") Long id, @RequestBody OrderDeleteDTO deleteDto){
-        OrderResponseDeleteDTO order = orderService.removeOrder(id, deleteDto);
+    public ResponseEntity<OrderResponseDTO> deleteOrder(@PathVariable("id") Long id, @RequestBody OrderDeleteDTO deleteDto){
+        OrderResponseDTO order = orderService.removeOrder(id, deleteDto);
         return ResponseEntity.status(HttpStatus.OK).body(order);
     }
-
-
-
-   /* public ResponseEntity<OrderResponseDTO> getById(@PathVariable Long id) {
-
-    }*/
-
-   /* @DeleteMapping("/{id}")
-    public ResponseEntity<OrderResponseDTO> deleteOrder(@PathVariable("id") Long id, @RequestBody OrderResponseDTO orderResponseDTO){
-        orderService.removeOrder(id);
-        return ResponseEntity.status(HttpStatus.OK).body(orderResponseDTO);
-    }*/
 
     @PutMapping("/{id}")
    public ResponseEntity<OrderResponseDTO> updateOrderId(@PathVariable("id") Long id, @Valid @RequestBody OrderUpdateDTO orderDto) {
