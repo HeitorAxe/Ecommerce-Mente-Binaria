@@ -1,4 +1,4 @@
-insert into ADDRESS (id, number, complement, postalCode, city, street, state) values (1);
+insert into ADDRESS (id, number, complement, postalCode, city, street, state) values (1, 16, 'Em frente a praça', 68990-000, 'Tartarugalzinho', 'Perpétuo Socorro', 'Amapá');
 
 insert into PRODUCTS (id, name, description, price) values (100, 'Televisão', 'Televisão da boa', 200);
 insert into ORDER_PRODUCT (order_id, product_id) values(100, 100);
