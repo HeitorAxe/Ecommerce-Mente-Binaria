@@ -26,6 +26,7 @@ public class OrderConstants {
 
     private static Order ORDER_CONFIRMED;
     private static Order ORDER_SENT;
+    private static Order ORDER_CANCELED;
     private static Product product;
 
     private static Address address = new Address(1L, 16, "Em frente a praça", "68990-000", "Tartarugalzinho", "Perpétuo Socorro", "Amapá");
@@ -50,7 +51,7 @@ public class OrderConstants {
 
     static {
         ORDER_SENT = new Order();
-        ORDER_SENT.setId(100L);
+        ORDER_SENT.setId(101L);
         ORDER_SENT.setAddress(address);
         ORDER_SENT.setPaymentMethod(PIX);
         ORDER_SENT.setOrderStatus(SENT);
@@ -65,6 +66,24 @@ public class OrderConstants {
         ORDER_SENT.addProduct(product, 4);
     }
     public static Order ORDER_WITH_STATUS_SENT = ORDER_SENT;
+
+    static {
+        ORDER_CANCELED = new Order();
+        ORDER_CANCELED.setId(103L);
+        ORDER_CANCELED.setAddress(address);
+        ORDER_CANCELED.setPaymentMethod(PIX);
+        ORDER_CANCELED.setOrderStatus(CANCELED);
+        ORDER_CANCELED.setHasDiscount(true);
+        ORDER_CANCELED.setTotalValue(950.00);
+        ORDER_CANCELED.setSubTotalValue(1000.00);
+        ORDER_CANCELED.setCreationDate(LocalDateTime.now());
+        ORDER_CANCELED.setCancelationDate(LocalDateTime.now().plusDays(89));
+        ORDER_CANCELED.setCancelReason("Não gostei do produto");
+
+        product = new Product(100L,"TV", "Tv linda grande e moderna", 500.00);
+        ORDER_CANCELED.addProduct(product, 4);
+    }
+    public static Order ORDER_WITH_STATUS_CANCELED = ORDER_CANCELED;
 
 
 }
