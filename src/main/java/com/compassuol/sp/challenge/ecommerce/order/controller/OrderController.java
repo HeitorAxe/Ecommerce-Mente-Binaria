@@ -65,7 +65,7 @@ public class OrderController {
                             content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ErrorMessage.class)))
             })
     @DeleteMapping("/{id}")
-    public ResponseEntity<OrderResponseDTO> deleteOrder(@PathVariable("id") Long id, @RequestBody OrderDeleteDTO deleteDto){
+    public ResponseEntity<OrderResponseDTO> deleteOrder(@PathVariable("id") Long id, @Valid @RequestBody OrderDeleteDTO deleteDto){
         OrderResponseDTO order = orderService.removeOrder(id, deleteDto);
         return ResponseEntity.status(HttpStatus.OK).body(order);
     }

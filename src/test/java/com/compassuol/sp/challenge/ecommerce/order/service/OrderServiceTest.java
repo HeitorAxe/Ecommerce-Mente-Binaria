@@ -12,6 +12,7 @@ import com.compassuol.sp.challenge.ecommerce.order.repository.OrderRepository;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
 import com.compassuol.sp.challenge.ecommerce.product.exception.ProductNameUniqueViolationException;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,6 +38,11 @@ class OrderServiceTest {
     OrderService orderService;
     @Mock
     OrderRepository orderRepository;
+    @AfterEach
+    public void afterEach(){
+        ORDER_WITH_STATUS_CONFIRMED.setId(null);
+        ORDER_WITH_STATUS_SENT.setId(null);
+    }
     @Test
     void createOrder() {
     }
@@ -63,7 +69,7 @@ class OrderServiceTest {
     @Test
     void removeOrder_WithInvalidOrderStatus_DoesThrowOrderStatusNotAuthorized() {
         OrderDeleteDTO delete = new OrderDeleteDTO("Não gostei do produto");
-        when(orderRepository.findById(ORDER_WITH_STATUS_SENT.getId())).thenReturn(Optional.of(ORDER_WITH_STATUS_SENT));
+        when(orderRepository.findById(any())).thenReturn(Optional.of(ORDER_WITH_STATUS_SENT));
 
         assertThatThrownBy(() -> orderService.removeOrder(ORDER_WITH_STATUS_CONFIRMED.getId(), delete)).isInstanceOf(OrderStatusNotAuthorizedException.class);
     }
