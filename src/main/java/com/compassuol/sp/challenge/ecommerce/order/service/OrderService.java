@@ -4,6 +4,7 @@ import com.compassuol.sp.challenge.ecommerce.order.consumer.ViaCepConsumerFeign;
 import com.compassuol.sp.challenge.ecommerce.order.dto.*;
 import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.OrderMapper;
 import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.ViaCepResponseMapper;
+import com.compassuol.sp.challenge.ecommerce.order.entity.Address;
 import com.compassuol.sp.challenge.ecommerce.order.entity.Order;
 
 import com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus;
@@ -68,13 +69,12 @@ public class OrderService {
     public OrderResponseDTO updateOrder(Long id, OrderUpdateDTO orderDto) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Order not found with id: " + id));
-        if (orderDto.getPaymentMethod() != null) {
-            order.setPaymentMethod(PaymentMethod.valueOf(orderDto.getPaymentMethod()));
-        }
-        if (orderDto.getOrderStatus() != null) {
-            order.setOrderStatus(OrderStatus.valueOf(orderDto.getOrderStatus()));
-        }
+        OrderMapper.updateOrder(order, orderDto, productRepository, addressRepository, viaCepConsumerFeign);
+        order.getProducts().removeIf(product -> !orderDto.getProducts().stream()
+                .anyMatch(orderProductDto -> orderProductDto.getProductId().equals(product.getId())));
         Order updatedOrder = orderRepository.save(order);
         return OrderMapper.toDTO(updatedOrder);
     }
+
+
 }

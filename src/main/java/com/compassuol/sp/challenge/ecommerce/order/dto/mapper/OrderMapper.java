@@ -1,11 +1,16 @@
 package com.compassuol.sp.challenge.ecommerce.order.dto.mapper;
 
+import com.compassuol.sp.challenge.ecommerce.order.consumer.ViaCepConsumerFeign;
 import com.compassuol.sp.challenge.ecommerce.order.dto.*;
 import com.compassuol.sp.challenge.ecommerce.order.entity.Address;
 import com.compassuol.sp.challenge.ecommerce.order.entity.Order;
+import com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus;
 import com.compassuol.sp.challenge.ecommerce.order.enums.PaymentMethod;
+import com.compassuol.sp.challenge.ecommerce.order.repository.AddressRepository;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
+import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
 import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
+import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -45,5 +50,60 @@ public class OrderMapper {
     public static List<OrderResponseDTO> toListDto(List<Order> orders) {
         return orders.stream().map(order -> toDTO(order)).collect(Collectors.toList());
     }
+
+    public static void toAddress(AddressDTO dto, Address address) {
+        if(dto.getCity()==null)
+            address.setCity(dto.getCity());
+        if(dto.getStreet()==null)
+            address.setStreet(dto.getStreet());
+        if(dto.getState()==null)
+            address.setState(dto.getState());
+
+        address.setNumber(dto.getNumber());
+        address.setComplement(dto.getComplement());
+        address.setPostalCode(dto.getPostalCode());
+    }
+
+
+    public static void updateOrder(Order order, OrderUpdateDTO orderDto,
+                                   ProductRepository productRepository, AddressRepository addressRepository,
+                                   ViaCepConsumerFeign viaCepConsumerFeign) {
+
+        updateOrderDetails(order, orderDto);
+        updateOrderProducts(order, orderDto.getProducts(), productRepository);
+        updateOrderAddress(order, orderDto.getAddress(), addressRepository, viaCepConsumerFeign);
+    }
+    private static void updateOrderDetails(Order order, OrderUpdateDTO orderDto) {
+        if (orderDto.getPaymentMethod() != null) {
+            order.setPaymentMethod(PaymentMethod.valueOf(orderDto.getPaymentMethod()));
+        }
+        if (orderDto.getOrderStatus() != null) {
+            order.setOrderStatus(OrderStatus.valueOf(orderDto.getOrderStatus()));
+        }
+    }
+
+    private static void updateOrderProducts(Order order, List<OrderHasProductDTO> productDTOList, ProductRepository productRepository) {
+        order.getProducts().clear();
+        for(OrderHasProductDTO orderProduct: productDTOList)
+            order.addProduct(productRepository.findById(orderProduct.getProductId()).orElseThrow(
+                    () -> new EntityNotFoundException(String.format("Product with id %s not found", orderProduct.getProductId()))
+            ), orderProduct.getQuantity());
+    }
+
+    private static void updateOrderAddress(Order order, AddressDTO addressDTO, AddressRepository addressRepository, ViaCepConsumerFeign viaCepConsumerFeign) {
+        if (addressDTO != null && addressDTO.getPostalCode() != null) {
+            Address address = order.getAddress();
+            OrderMapper.toAddress(addressDTO, address);
+
+            if (address.getPostalCode() != null && !address.getPostalCode().isEmpty()) {
+                ViaCepResponseDTO viaCepResponse = viaCepConsumerFeign.getAddressByPostalCode(address.getPostalCode());
+                ViaCepResponseMapper.complementAddress(viaCepResponse, address);
+            }
+            addressRepository.save(address);
+            order.setAddress(address);
+        }
+    }
+
+
 
 }

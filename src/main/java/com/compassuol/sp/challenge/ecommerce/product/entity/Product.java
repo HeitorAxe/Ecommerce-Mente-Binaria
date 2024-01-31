@@ -27,6 +27,7 @@ public class Product implements Serializable {
     @Column(name = "price", nullable = false)
     private Double price;
 
+
     public Product(String name, String description, Double price) {
         this.name = name;
         this.description = description;
