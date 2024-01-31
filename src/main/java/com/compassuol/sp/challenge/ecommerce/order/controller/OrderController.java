@@ -46,6 +46,17 @@ public class OrderController {
         return ResponseEntity.ok(OrderMapper.toListDto(orders));
     }
 
+
+    @Operation(summary = "Retrieve a order by id", description = "This operation allows clients to retrieve details of an order based on its unique identifier. No authentication is required for this operation ",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successful retrieval of the order",
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = OrderResponseDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Bad request - The request is poorly formatted or contains invalid parameters",
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "404", description = "Order not found",
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ErrorMessage.class)))
+
+            })
     @GetMapping("/{id}")
     public ResponseEntity<OrderResponseDTO> getById(@PathVariable Long id) {
         if(id < 0){
