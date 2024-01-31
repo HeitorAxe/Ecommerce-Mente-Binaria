@@ -40,7 +40,6 @@ class ProductServiceTest {
         when(productRepository.save(ProductConstants.PRODUCT)).thenReturn(ProductConstants.PRODUCT);
         ProductResponseDTO sut = productService.createProduct(PRODUCT_CREATE_DTO);
         assertThat(sut.getName()).isEqualTo(PRODUCT_RESPONSE_DTO.getName());
-
     }
     @Test
     void createProduct_WithInvalidData_ThrowsException(){

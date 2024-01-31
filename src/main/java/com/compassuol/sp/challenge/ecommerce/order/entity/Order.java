@@ -1,14 +1,21 @@
 package com.compassuol.sp.challenge.ecommerce.order.entity;
 
+import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.OrderMapper;
 import com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus;
 import com.compassuol.sp.challenge.ecommerce.order.enums.PaymentMethod;
+import com.compassuol.sp.challenge.ecommerce.order.exception.OrderStatusNotAuthorizedException;
+import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.CANCELED;
+import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.CONFIRMED;
 
 @Getter
 @Setter
@@ -41,10 +48,15 @@ public class Order implements Serializable {
     private Double totalValue;
 
     @Column(name = "subtotal_value")
-    private Double subTotalValue;
+    private Double subTotalValue = 0.0;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderHasProduct> products;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "order_product",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private List<Product> products = new ArrayList<>();
 
     @Column(name = "creation_date", nullable = false)
     private LocalDateTime creationDate;
@@ -57,12 +69,33 @@ public class Order implements Serializable {
     @Column(name = "cancel_reason")
     private  String cancelReason;
 
-    public void updateValues(){
-        subTotalValue=0.0;
-        for (OrderHasProduct orderProduct:products)
-            subTotalValue+=orderProduct.getProduct().getPrice();
-        totalValue = subTotalValue - (subTotalValue/100.0)*5.0;
+    public void addProduct(Product product, int quantity){
+        for (int i =0 ; i<quantity; i++){
+            this.getProducts().add(product);
+            this.subTotalValue+=product.getPrice();
+        }
+        totalValue = subTotalValue;
+        if(paymentMethod==PaymentMethod.PIX)
+            totalValue-=totalValue/100.0 * 5.0;
     }
+
+    public void cancel(String cancelReason){
+        LocalDateTime cancelationPeriod = this.getCreationDate().plusDays(90);
+        if(this.orderStatus == OrderStatus.CONFIRMED && LocalDateTime.now().isBefore(cancelationPeriod)){
+            this.orderStatus = CANCELED;
+            this.cancelationDate = LocalDateTime.now();
+            this.cancelReason = cancelReason;
+        }else if (this.orderStatus != CONFIRMED){
+            throw new OrderStatusNotAuthorizedException(
+                    "O status do pedido deve ser diferente de SENT"
+            );
+        }else if (LocalDateTime.now().isAfter(cancelationPeriod)){
+            throw new OrderStatusNotAuthorizedException(
+                    "O cancelamento do pedido só pode ser feito antes de 90 dias da compra"
+            );
+        }
+    }
+
 
 
 }
