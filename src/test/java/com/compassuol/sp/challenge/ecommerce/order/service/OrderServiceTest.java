@@ -10,6 +10,8 @@ import com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus;
 import com.compassuol.sp.challenge.ecommerce.order.exception.OrderStatusNotAuthorizedException;
 import com.compassuol.sp.challenge.ecommerce.order.repository.OrderRepository;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
+import com.compassuol.sp.challenge.ecommerce.product.exception.ProductNameUniqueViolationException;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,10 +24,10 @@ import java.util.Optional;
 
 import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.ORDER_WITH_STATUS_CONFIRMED;
 import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.ORDER_WITH_STATUS_SENT;
-import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.PRODUCT_CREATE_DTO;
-import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.PRODUCT_RESPONSE_DTO;
-import static org.assertj.core.api.Assertions.assertThat;
+import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,20 +53,19 @@ class OrderServiceTest {
     void removeProduct_WithValidData_ReturnsOrderWithOrderStatusCanceled() {
         OrderDeleteDTO delete = new OrderDeleteDTO("Não gostei do produto");
         when(orderRepository.findById(ORDER_WITH_STATUS_CONFIRMED.getId())).thenReturn(Optional.of(ORDER_WITH_STATUS_CONFIRMED));
+
         OrderResponseDTO sut = orderService.removeOrder(ORDER_WITH_STATUS_CONFIRMED.getId(), delete);
         assertThat(sut.getOrderStatus()).isEqualTo(String.valueOf(OrderStatus.CANCELED));
         assertThat(sut.getCancelationDate()).isNotNull();
-        assertThat(sut.getCancelReason()).isNotNull();
+        assertThat(sut.getCancelReason()).isEqualTo("Não gostei do produto");
     }
-//    @Test
-//    void removeOrder_WithNotExistingId_doesNotThrowAnyException() {
-//        OrderDeleteDTO delete = new OrderDeleteDTO("");
-//        when(orderRepository.findById(ORDER_WITH_STATUS_SENT.getId())).thenReturn(Optional.of(ORDER_WITH_STATUS_SENT));
-//        OrderResponseDTO sut = orderService.removeOrder(ORDER_WITH_STATUS_SENT.getId(), delete);
-//        assertThat(sut.getOrderStatus()).isEqualTo(String.valueOf(OrderStatus.SENT));
-//        assertThat(sut.getCancelationDate()).isNull();
-//        assertThat(sut.getCancelReason()).isNull();
-//    }
+    @Test
+    void removeOrder_WithInvalidOrderStatus_DoesThrowOrderStatusNotAuthorized() {
+        OrderDeleteDTO delete = new OrderDeleteDTO("Não gostei do produto");
+        when(orderRepository.findById(ORDER_WITH_STATUS_SENT.getId())).thenReturn(Optional.of(ORDER_WITH_STATUS_SENT));
+
+        assertThatThrownBy(() -> orderService.removeOrder(ORDER_WITH_STATUS_CONFIRMED.getId(), delete)).isInstanceOf(OrderStatusNotAuthorizedException.class);
+    }
 
     @Test
     void updateOrder() {

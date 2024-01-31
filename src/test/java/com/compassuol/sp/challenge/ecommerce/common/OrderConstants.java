@@ -35,7 +35,7 @@ public class OrderConstants {
         ORDER_CONFIRMED.setId(100L);
         ORDER_CONFIRMED.setAddress(address);
         ORDER_CONFIRMED.setPaymentMethod(PIX);
-        ORDER_CONFIRMED.setOrderStatus(OrderStatus.CONFIRMED);
+        ORDER_CONFIRMED.setOrderStatus(CONFIRMED);
         ORDER_CONFIRMED.setHasDiscount(true);
         ORDER_CONFIRMED.setTotalValue(950.00);
         ORDER_CONFIRMED.setSubTotalValue(1000.00);
@@ -53,7 +53,7 @@ public class OrderConstants {
         ORDER_SENT.setId(100L);
         ORDER_SENT.setAddress(address);
         ORDER_SENT.setPaymentMethod(PIX);
-        ORDER_SENT.setOrderStatus(OrderStatus.CONFIRMED);
+        ORDER_SENT.setOrderStatus(SENT);
         ORDER_SENT.setHasDiscount(true);
         ORDER_SENT.setTotalValue(950.00);
         ORDER_SENT.setSubTotalValue(1000.00);
