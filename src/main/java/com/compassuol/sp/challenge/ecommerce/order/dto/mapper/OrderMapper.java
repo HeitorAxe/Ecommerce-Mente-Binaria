@@ -25,8 +25,9 @@ import static org.apache.commons.io.IOUtils.skip;
 public class OrderMapper {
     ProductService productService;
 
-    public static Order toOrder(OrderCreateDTO dto, Order order) {
+    public static Order toOrder(OrderCreateDTO dto) {
         ModelMapper mapper = new ModelMapper();
+        Order order = new Order();
         order.setAddress(mapper.map(dto.getAddress(), Address.class));
         order.setPaymentMethod(PaymentMethod.valueOf(dto.getPaymentMethod()));
         return order;

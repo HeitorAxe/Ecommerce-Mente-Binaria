@@ -59,9 +59,8 @@ public class Order implements Serializable {
     private List<Product> products = new ArrayList<>();
 
     @Column(name = "creation_date", nullable = false)
-    private LocalDateTime creationDate;
+    private LocalDateTime creationDate = LocalDateTime.now();
 
-    //nullable until cancelation
     //@CreatedDate
     @Column(name = "cancelation_date")
     private LocalDateTime cancelationDate;
