@@ -83,24 +83,11 @@ public class OrderMapper {
     }
 
     private static void updateOrderProducts(Order order, List<OrderHasProductDTO> productDTOList, ProductRepository productRepository) {
-        for (OrderHasProductDTO orderProductDto : productDTOList) {
-            Long productId = orderProductDto.getProductId();
-            int quantity = orderProductDto.getQuantity();
-            boolean found = false;
-
-            for (Product product : order.getProducts()) {
-                if (product.getId().equals(productId)) {
-                    product.setQuantity(quantity);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                Product product = productRepository.findById(productId)
-                        .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + productId));
-                order.addProduct(product, quantity);
-            }
-        }
+        order.getProducts().clear();
+        for(OrderHasProductDTO orderProduct: productDTOList)
+            order.addProduct(productRepository.findById(orderProduct.getProductId()).orElseThrow(
+                    () -> new EntityNotFoundException(String.format("Product with id %s not found", orderProduct.getProductId()))
+            ), orderProduct.getQuantity());
     }
 
     private static void updateOrderAddress(Order order, AddressDTO addressDTO, AddressRepository addressRepository, ViaCepConsumerFeign viaCepConsumerFeign) {
