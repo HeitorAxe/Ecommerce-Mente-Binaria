@@ -37,8 +37,7 @@ public class OrderService {
         Order order = new Order();
         OrderMapper.toOrder(createDto, order);
         for(OrderHasProductDTO orderProduct : createDto.getProducts())
-            for(int i = 0; i<orderProduct.getQuantity(); i++)
-                order.getProducts().add(productRepository.findById(orderProduct.getProductId()).orElseThrow());
+            order.addProduct(productRepository.findById(orderProduct.getProductId()).orElseThrow(), orderProduct.getQuantity());
         ViaCepResponseDTO viaCepResponse = viaCepConsumerFeign.getAddressByPostalCode(order.getAddress().getPostalCode());
         ViaCepResponseMapper.complementAddress(viaCepResponse, order.getAddress());
         order.setCreationDate(LocalDateTime.now());
@@ -60,26 +59,10 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponseDeleteDTO removeOrder(Long id, OrderDeleteDTO deleteDto) {
-        Order order = orderRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(String.format("Order id %d not found", id))
-        );
-        LocalDateTime purchasePeriod = order.getCreationDate().plusDays(90);
-        if (order.getOrderStatus() == CONFIRMED && LocalDateTime.now().isBefore(purchasePeriod)){ // Se agora for antes da data limite do cancelamento
-                order.setOrderStatus(CANCELED);
-                order.setCancelationDate(LocalDateTime.now());
-                order.setCancelReason(deleteDto.getCancelReason());
-        } else if (order.getOrderStatus() != CONFIRMED) {
-            throw new OrderStatusNotAuthorizedException(
-                    "O status do pedido deve ser diferente de SENT"
-            );
-        }else if (LocalDateTime.now().isAfter(purchasePeriod)){
-            throw new OrderStatusNotAuthorizedException(
-                    "O cancelamento do pedido só pode ser feito antes de 90 dias da compra"
-            );
-        }
-        return OrderMapper.toDtoDelete(order);
-
+    public OrderResponseDTO removeOrder(Long id, OrderDeleteDTO deleteDto) {
+        Order order = orderRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Order id %d not found", id)));
+        order.cancel(deleteDto.getCancelReason());
+        return OrderMapper.toDTO(order);
     }
 
     public OrderResponseDTO updateOrder(Long id, OrderUpdateDTO orderDto) {
