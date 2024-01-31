@@ -30,6 +30,19 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+
+    @Operation(summary = "Create order", description = "This operation allows clients to create an order. No authentication is required for this operation ",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successful retrieval of the order",
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = OrderResponseDTO.class))),
+                    @ApiResponse(responseCode = "422", description = "Unprocessable Entity - The request contains invalid parameters",
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "404", description = "Product not found",
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "400", description = "Bad Request - The request is poorly formatted",
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ErrorMessage.class))),
+
+            })
     @PostMapping
     public ResponseEntity<OrderResponseDTO> createOrder(@Valid @RequestBody OrderCreateDTO createDto){
         OrderResponseDTO order = orderService.createOrder(createDto);
