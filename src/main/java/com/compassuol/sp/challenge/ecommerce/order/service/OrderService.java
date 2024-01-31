@@ -38,6 +38,7 @@ public class OrderService {
     private final AddressRepository addressRepository;
     private final ProductRepository productRepository;
     private final ViaCepConsumerFeign viaCepConsumerFeign;
+
     @Transactional
     public OrderResponseDTO createOrder(OrderCreateDTO createDto) {
         Order order = OrderMapper.toOrder(createDto);
@@ -48,7 +49,7 @@ public class OrderService {
         order.setProducts(new ArrayList<>());
         addressRepository.save(order.getAddress());
         orderRepository.save(order);
-        for(OrderHasProduct orderHasProduct: products){
+        for (OrderHasProduct orderHasProduct : products) {
             orderHasProduct.setOrder(order);
             orderHasProduct.setProduct(productRepository.findById(orderHasProduct.getProduct().getId()).orElseThrow(
                     () -> new RuntimeException("Produto não encontrado")
@@ -62,10 +63,10 @@ public class OrderService {
 
     @Transactional
     public OrderResponseDTO getbyId(Long id) {
-    Order order = orderRepository.findById(id).orElseThrow(
-            () -> new EntityNotFoundException(String.format("Order %d not found", id))
-    );
-    return OrderMapper.toDTO(order);
+        Order order = orderRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(String.format("Order %d not found", id))
+        );
+        return OrderMapper.toDTO(order);
     }
 
     public List<Order> getAll() {
@@ -78,15 +79,15 @@ public class OrderService {
                 () -> new EntityNotFoundException(String.format("Order id %d not found", id))
         );
         LocalDateTime purchasePeriod = order.getCreationDate().plusDays(90);
-        if (order.getOrderStatus() == CONFIRMED && LocalDateTime.now().isBefore(purchasePeriod)){ // Se agora for antes da data limite do cancelamento
-                order.setOrderStatus(CANCELED);
-                order.setCancelationDate(LocalDateTime.now());
-                order.setCancelReason(deleteDto.getCancelReason());
+        if (order.getOrderStatus() == CONFIRMED && LocalDateTime.now().isBefore(purchasePeriod)) { // Se agora for antes da data limite do cancelamento
+            order.setOrderStatus(CANCELED);
+            order.setCancelationDate(LocalDateTime.now());
+            order.setCancelReason(deleteDto.getCancelReason());
         } else if (order.getOrderStatus() != CONFIRMED) {
             throw new OrderStatusNotAuthorizedException(
                     "O status do pedido deve ser diferente de SENT"
             );
-        }else if (LocalDateTime.now().isAfter(purchasePeriod)){
+        } else if (LocalDateTime.now().isAfter(purchasePeriod)) {
             throw new OrderStatusNotAuthorizedException(
                     "O cancelamento do pedido só pode ser feito antes de 90 dias da compra"
             );
@@ -94,3 +95,4 @@ public class OrderService {
         return OrderMapper.toDtoDelete(order);
 
     }
+}
