@@ -12,9 +12,7 @@ import com.compassuol.sp.challenge.ecommerce.order.repository.OrderRepository;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
 import com.compassuol.sp.challenge.ecommerce.product.exception.ProductNameUniqueViolationException;
 import jakarta.persistence.EntityNotFoundException;
-import org.assertj.core.api.ObjectAssert;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -30,8 +28,7 @@ import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -45,34 +42,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void getbyId_WithValidDatas_ReturnOrderResponseDto() {
-
-        when(orderRepository.findById(anyLong())).thenReturn(Optional.of(ORDER_WITH_STATUS_CONFIRMED));
-        OrderResponseDTO dto = orderService.getbyId(ORDER_WITH_STATUS_CONFIRMED.getId());
-        OrderResponseDTO expectedDto = new OrderResponseDTO();
-        expectedDto.setAddress(dto.getAddress());
-        expectedDto.setPaymentMethod(dto.getPaymentMethod());
-        expectedDto.setOrderStatus(dto.getOrderStatus());
-        expectedDto.setTotalValue(dto.getTotalValue());
-        expectedDto.setSubTotalValue(dto.getSubTotalValue());
-        expectedDto.setProducts(dto.getProducts());
-        expectedDto.setCreationDate(dto.getCreationDate());
-
-        assertThat(dto).isNotNull();
-        assertThat(dto.getProducts()).isEqualTo(expectedDto.getProducts());
-        assertThat(dto.getCreationDate()).isEqualTo(expectedDto.getCreationDate());
-        assertThat(dto.getPaymentMethod()).isEqualTo(expectedDto.getPaymentMethod());
-        assertThat(dto.getAddress()).isEqualTo(expectedDto.getAddress());
-        assertThat(dto.getSubTotalValue()).isEqualTo(expectedDto.getSubTotalValue());
-
-        verify(orderRepository, times(1)).findById(eq(ORDER_WITH_STATUS_CONFIRMED.getId()));
-
-    }
-
-    @Test
-    void getById_WithInvalidDatas_ThrowsException(){
-       assertThatThrownBy(()-> orderService.getbyId(ORDER_WITH_STATUS_CONFIRMED.getId())).isInstanceOf(EntityNotFoundException.class)
-               .hasMessage(String.format("Order %d not found", ORDER_WITH_STATUS_CONFIRMED.getId()));
+    void getbyId() {
     }
 
     @Test

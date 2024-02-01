@@ -1,5 +1,6 @@
 package com.compassuol.sp.challenge.ecommerce.order.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Getter
@@ -8,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class OrderDeleteDTO {
-
+    @NotBlank(message = "cancel reason cannot be empty")
     private String cancelReason;
 
 }

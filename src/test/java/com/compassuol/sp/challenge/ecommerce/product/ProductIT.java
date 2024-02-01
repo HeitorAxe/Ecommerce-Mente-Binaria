@@ -1,4 +1,4 @@
-package com.compassuol.sp.challenge.ecommerce;
+package com.compassuol.sp.challenge.ecommerce.product;
 
 import com.compassuol.sp.challenge.ecommerce.handler.ErrorMessage;
 import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;

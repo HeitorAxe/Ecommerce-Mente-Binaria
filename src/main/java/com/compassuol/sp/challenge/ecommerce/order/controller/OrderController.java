@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -24,12 +25,26 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name ="Orders", description = "Contains all operations to register, edit, delete, view an order.")
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderController {
 
     private final OrderService orderService;
+
+    @Operation(summary = "Create order", description = "This operation allows clients to create an order. No authentication is required for this operation ",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Successful creation of order",
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = OrderResponseDTO.class))),
+                    @ApiResponse(responseCode = "422", description = "Unprocessable Entity - The request contains invalid parameters",
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "404", description = "Product not found",
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "400", description = "Bad Request - The request is poorly formatted",
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ErrorMessage.class))),
+
+            })
     @PostMapping
     public ResponseEntity<OrderResponseDTO> createOrder(@Valid @RequestBody OrderCreateDTO createDto){
         OrderResponseDTO order = orderService.createOrder(createDto);
@@ -76,7 +91,7 @@ public class OrderController {
                             content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ErrorMessage.class)))
             })
     @DeleteMapping("/{id}")
-    public ResponseEntity<OrderResponseDTO> deleteOrder(@PathVariable("id") Long id, @RequestBody OrderDeleteDTO deleteDto){
+    public ResponseEntity<OrderResponseDTO> deleteOrder(@PathVariable("id") Long id, @Valid @RequestBody OrderDeleteDTO deleteDto){
         OrderResponseDTO order = orderService.removeOrder(id, deleteDto);
         return ResponseEntity.status(HttpStatus.OK).body(order);
     }
@@ -90,10 +105,10 @@ public class OrderController {
                     @ApiResponse(responseCode = "404", description = "Resource not found",
                             content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ErrorMessage.class)))
             })
+
     @PutMapping("/{id}")
-   public ResponseEntity<OrderResponseDTO> updateOrderId(@PathVariable("id") Long id, @Valid @RequestBody OrderUpdateDTO orderDto) {
+    public ResponseEntity<OrderResponseDTO> updateOrderId(@PathVariable("id") Long id, @Valid @RequestBody OrderUpdateDTO orderDto) {
        OrderResponseDTO updatedOrder = orderService.updateOrder(id, orderDto);
        return ResponseEntity.ok(updatedOrder);
-
     }
 }

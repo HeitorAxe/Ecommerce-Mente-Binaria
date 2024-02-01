@@ -1,4 +1,4 @@
-package com.compassuol.sp.challenge.ecommerce.web;
+package com.compassuol.sp.challenge.ecommerce.product.controller;
 
 import com.compassuol.sp.challenge.ecommerce.product.controller.ProductController;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
@@ -6,6 +6,7 @@ import com.compassuol.sp.challenge.ecommerce.product.exception.ProductNameUnique
 import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
 import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -18,6 +19,8 @@ import java.util.List;
 import java.util.Optional;
 
 
+import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.ORDER_WITH_STATUS_CONFIRMED;
+import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.ORDER_WITH_STATUS_SENT;
 import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -44,7 +47,7 @@ class ProductControllerTest {
     ProductRepository productRepository;
 
     @Test
-    void createPlanet_WithValidData_ReturnsCreated() throws Exception {
+    void createProduct_WithValidData_ReturnsCreated() throws Exception {
 
         when(productService.createProduct(PRODUCT_CREATE_DTO)).thenReturn(PRODUCT_RESPONSE_DTO);
 
@@ -73,7 +76,7 @@ class ProductControllerTest {
     }
 
     @Test
-    void getPlanet_ByExistingId_ReturnsPlanet() throws Exception {
+    void getProduct_ByExistingId_ReturnsProduct() throws Exception {
         when(productService.getById(1L)).thenReturn(PRODUCT_RESPONSE_DTO);
 
         mockMvc.perform(
@@ -81,10 +84,9 @@ class ProductControllerTest {
                 )
                 .andExpect(status().isOk());
     }
-
-    @Test
-    void getProduct_ByNonexistingId_ReturnsNotFound() throws Exception {
-        when(productService.getById(anyLong())).thenThrow(ProductNameUniqueViolationException.class);
+   @Test
+   void getProduct_ByNonexistingId_ReturnsNotFound() throws Exception {
+       when(productService.getById(anyLong())).thenThrow(ProductNameUniqueViolationException.class);
         mockMvc.perform(get("/products/0")).andExpect(status().isNotFound());
     }
 

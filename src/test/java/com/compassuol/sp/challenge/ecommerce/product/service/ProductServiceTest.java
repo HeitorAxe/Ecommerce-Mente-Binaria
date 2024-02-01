@@ -1,4 +1,4 @@
-package com.compassuol.sp.challenge.ecommerce.entity;
+package com.compassuol.sp.challenge.ecommerce.product.service;
 
 import com.compassuol.sp.challenge.ecommerce.common.ProductConstants;
 import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
@@ -34,6 +34,8 @@ class ProductServiceTest {
 
     @Mock
     ProductRepository productRepository;
+
+
 
     @Test
     void createProduct_WithValidData_ReturnProduct(){
