@@ -130,5 +130,53 @@ public class OrderIT {
     }
 
 
+    @Test
+    void updateOrder_WithvalidParameter_ReturnsStatusOk200(){
+        testClient.method(HttpMethod.PUT)
+                .uri("/orders/100")
+                .bodyValue(VALID_CREATE_ORDER_DTO)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+    }
 
+    @Test
+    void updateOrder_WithInvalidBody_ReturnsErrorMessageAndStatusBadRequest400(){
+        testClient.method(HttpMethod.PUT)
+                .uri("/orders/123a")
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+
+    }
+
+    @Test
+    void updateOrder_WithReturnsErrorMessageAndStatusNotFound404(){
+        testClient.method(HttpMethod.PUT)
+                .uri("/orders/100")
+                .bodyValue(CREATE_ORDER_DTO_NONEXISTEN_PRODUCT_ID)
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+        testClient.method(HttpMethod.PUT)
+                .uri("/orders/999")
+                .bodyValue(VALID_CREATE_ORDER_DTO)
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+    }
+
+    @Test
+    void updateOrder_WithInvalidParameter_ReturnsStatus405(){
+        testClient.method(HttpMethod.PUT)
+                .uri("/orders")
+                .exchange()
+                .expectStatus().isEqualTo(405)
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+    }
 }

@@ -101,4 +101,5 @@ public class OrderConstants {
     public static OrderCreateDTO INVALID_CREATE_ORDER_DTO = new OrderCreateDTO(VALID_LIST_ORDER_HAS_PRODUCT_DTO, VALID_ADDRESS_DTO, "PAY_WITH_SOUL");
     public static OrderCreateDTO CREATE_ORDER_DTO_NONEXISTEN_PRODUCT_ID = new OrderCreateDTO(INVALID_LIST_ORDER_HAS_PRODUCT_DTO, VALID_ADDRESS_DTO, "PIX");
     public static OrderResponseDTO ORDER_RESPONSE_DTO = OrderMapper.toDTO(ORDER_WITH_STATUS_CONFIRMED);
+
 }

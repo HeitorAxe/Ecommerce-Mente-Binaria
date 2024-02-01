@@ -96,7 +96,7 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK).body(order);
     }
 
-    @Operation(summary = "update order", description = "Customers can update the order",
+    @Operation(summary = "Update order", description = "Customers can update the order",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Resource retrieved successfully",
                             content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ProductResponseDTO.class))),
