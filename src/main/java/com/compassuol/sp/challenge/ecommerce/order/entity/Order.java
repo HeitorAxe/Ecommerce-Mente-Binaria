@@ -60,9 +60,8 @@ public class Order implements Serializable {
 
 
     @Column(name = "creation_date", nullable = false)
-    private LocalDateTime creationDate;
+    private LocalDateTime creationDate = LocalDateTime.now();
 
-    //nullable until cancelation
     //@CreatedDate
     @Column(name = "cancelation_date")
     private LocalDateTime cancelationDate;

@@ -16,8 +16,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
-import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.CANCELED;
-import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.SENT;
+import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.*;
+import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.*;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -79,8 +79,56 @@ public class OrderIT {
 
         org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
         org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(422);
-
-
     }
+
+    @Test
+    void createOrder_WithValidData_ReturnStatusOkAndOrder(){
+        OrderResponseDTO responseBody = testClient.method(HttpMethod.POST)
+                .uri("/orders")
+                .bodyValue(VALID_CREATE_ORDER_DTO)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(OrderResponseDTO.class)
+                .returnResult().getResponseBody();
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getOrderStatus()).isEqualTo(CONFIRMED.toString());
+        org.assertj.core.api.Assertions.assertThat(responseBody.getAddress().getPostalCode()).isEqualTo(VALID_CREATE_ORDER_DTO.getAddress().getPostalCode());
+        org.assertj.core.api.Assertions.assertThat(responseBody.getProducts().get(0).getProductId())
+                .isEqualTo(VALID_CREATE_ORDER_DTO.getProducts().get(0).getProductId());
+    }
+
+    @Test
+    void createOrder_WithInvalidParameter_ReturnsErrorMessageAndStatus422(){
+        testClient.method(HttpMethod.POST)
+                .uri("/orders")
+                .bodyValue(INVALID_CREATE_ORDER_DTO)
+                .exchange()
+                .expectStatus().isEqualTo(422)
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+    }
+
+    @Test
+    void createOrder_WithNonexistenProduct_ReturnsErrorMessageAndStatusNotFound(){
+        testClient.method(HttpMethod.POST)
+                .uri("/orders")
+                .bodyValue(CREATE_ORDER_DTO_NONEXISTEN_PRODUCT_ID)
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+    }
+
+    @Test
+    void createOrder_WithInvalidBody_ReturnsErrorMessageAndStatusBadRequest(){
+        testClient.method(HttpMethod.POST)
+                .uri("/orders")
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+    }
+
+
 
 }

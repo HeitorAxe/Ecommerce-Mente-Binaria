@@ -33,15 +33,21 @@ public class OrderService {
     private final AddressRepository addressRepository;
     private final ProductRepository productRepository;
     private final ViaCepConsumerFeign viaCepConsumerFeign;
+
     @Transactional
     public OrderResponseDTO createOrder(OrderCreateDTO createDto) {
-        Order order = new Order();
-        OrderMapper.toOrder(createDto, order);
-        for(OrderHasProductDTO orderProduct : createDto.getProducts())
-            order.addProduct(productRepository.findById(orderProduct.getProductId()).orElseThrow(), orderProduct.getQuantity());
+        Order order = OrderMapper.toOrder(createDto);
+
+        createDto.getProducts().forEach(orderProduct -> {
+            Product product = productRepository.findById(orderProduct.getProductId()).orElseThrow(
+                    () -> new EntityNotFoundException(String.format("Product with id %s not found", orderProduct.getProductId()))
+            );
+            order.addProduct(product, orderProduct.getQuantity());
+        });
+
         ViaCepResponseDTO viaCepResponse = viaCepConsumerFeign.getAddressByPostalCode(order.getAddress().getPostalCode());
         ViaCepResponseMapper.complementAddress(viaCepResponse, order.getAddress());
-        order.setCreationDate(LocalDateTime.now());
+
         addressRepository.save(order.getAddress());
         orderRepository.save(order);
         return OrderMapper.toDTO(order);
@@ -50,7 +56,7 @@ public class OrderService {
     @Transactional
     public OrderResponseDTO getbyId(Long id) {
         Order order = orderRepository.findById(id).orElseThrow(
-            () -> new EntityNotFoundException(String.format("Order %d not found", id))
+                () -> new EntityNotFoundException(String.format("Order %d not found", id))
         );
         return OrderMapper.toDTO(order);
     }
@@ -70,8 +76,6 @@ public class OrderService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Order not found with id: " + id));
         OrderMapper.updateOrder(order, orderDto, productRepository, addressRepository, viaCepConsumerFeign);
-        order.getProducts().removeIf(product -> !orderDto.getProducts().stream()
-                .anyMatch(orderProductDto -> orderProductDto.getProductId().equals(product.getId())));
         Order updatedOrder = orderRepository.save(order);
         return OrderMapper.toDTO(updatedOrder);
     }
