@@ -12,10 +12,13 @@ import com.compassuol.sp.challenge.ecommerce.order.enums.PaymentMethod;
 import com.compassuol.sp.challenge.ecommerce.order.exception.OrderStatusNotAuthorizedException;
 import com.compassuol.sp.challenge.ecommerce.order.repository.AddressRepository;
 import com.compassuol.sp.challenge.ecommerce.order.repository.OrderRepository;
+import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
+import com.compassuol.sp.challenge.ecommerce.product.dto.mapper.PageableMapper;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +60,11 @@ public class OrderService {
 
     public List<Order> getAll() {
         return orderRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public PageableDTO getAllAsPage(Pageable pageable) {
+        return PageableMapper.toDTO(orderRepository.findAllAsProjection(pageable));
     }
 
     @Transactional

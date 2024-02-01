@@ -1,6 +1,7 @@
 package com.compassuol.sp.challenge.ecommerce.order.controller;
 
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderDeleteDTO;
+import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
 import com.compassuol.sp.challenge.ecommerce.order.exception.OrderStatusNotAuthorizedException;
 import com.compassuol.sp.challenge.ecommerce.order.repository.OrderRepository;
 import com.compassuol.sp.challenge.ecommerce.order.service.OrderService;
@@ -17,16 +18,21 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.*;
 import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.PRODUCT;
+import static org.h2.store.fs.FilePath.get;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(OrderController.class)
@@ -58,9 +64,6 @@ class OrderControllerTest {
     void getAllAsPage() {
     }
 
-    @Test
-    void getAll() {
-    }
 
     @Test
     void getById() {
