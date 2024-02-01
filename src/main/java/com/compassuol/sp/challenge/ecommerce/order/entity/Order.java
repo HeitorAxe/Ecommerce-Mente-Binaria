@@ -58,6 +58,7 @@ public class Order implements Serializable {
     )
     private List<Product> products = new ArrayList<>();
 
+
     @Column(name = "creation_date", nullable = false)
     private LocalDateTime creationDate;
 
@@ -68,6 +69,7 @@ public class Order implements Serializable {
 
     @Column(name = "cancel_reason")
     private  String cancelReason;
+
 
     public void addProduct(Product product, int quantity){
         for (int i =0 ; i<quantity; i++){
