@@ -7,7 +7,9 @@ import com.compassuol.sp.challenge.ecommerce.order.service.OrderService;
 import com.compassuol.sp.challenge.ecommerce.product.controller.ProductController;
 import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
 import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -27,6 +29,7 @@ import static org.mockito.Mockito.when;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(OrderController.class)
@@ -47,11 +50,27 @@ class OrderControllerTest {
     public void afterEach(){
         ORDER_WITH_STATUS_CONFIRMED.setId(null);
         ORDER_WITH_STATUS_SENT.setId(null);
-
     }
 
     @Test
-    void createOrder() {
+    void createOrder_WithValidData_ReturnsStatusIsCreated() throws Exception {
+        //OrderDeleteDTO dto = new OrderDeleteDTO("odiei o produto");
+        when(orderService.createOrder(any())).thenReturn(ORDER_RESPONSE_DTO);
+        mockMvc.perform(post("/orders")
+                        .content(objectMapper.writeValueAsString(VALID_CREATE_ORDER_DTO))
+                        .contentType(
+                                MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void createOrder_WithNonexistentProductId_ThrowsExceptionNotFound() throws Exception {
+        when(orderService.createOrder(any())).thenThrow(new EntityNotFoundException());
+        mockMvc.perform(post("/orders")
+                        .content(objectMapper.writeValueAsString(VALID_CREATE_ORDER_DTO))
+                        .contentType(
+                                MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test
