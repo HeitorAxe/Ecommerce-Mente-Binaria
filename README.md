@@ -162,9 +162,6 @@ A API de Produtos pode gerar diferentes códigos de resposta HTTP em caso de exc
 
 }
 ```
-# API de Pedidos
-
-Bem-vindo à API de Pedidos, desenvolvida em Spring Boot. Esta API fornece endpoints para gerenciar informações sobre pedidos.
 
 
 ## Endpoints da API de Pedidos
