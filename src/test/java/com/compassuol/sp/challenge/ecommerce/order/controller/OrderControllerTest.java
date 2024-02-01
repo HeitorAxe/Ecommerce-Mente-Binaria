@@ -31,7 +31,6 @@ import java.util.Optional;
 import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.*;
 
 import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.PRODUCT;
-import static org.h2.store.fs.FilePath.get;
 import static org.hamcrest.Matchers.hasSize;
 
 import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.PRODUCT_RESPONSE_DTO;
