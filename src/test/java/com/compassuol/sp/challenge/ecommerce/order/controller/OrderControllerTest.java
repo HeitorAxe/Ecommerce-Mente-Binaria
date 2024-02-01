@@ -137,7 +137,7 @@ class OrderControllerTest {
 
     @Test
     void updateOrder_WithValidData_ReturnsNewOrder() throws Exception {
-        when(orderRepository.findById(1L)).thenReturn(Optional.ofNullable(ORDER_WITH_STATUS_CONFIRMED));
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(ORDER_WITH_STATUS_CONFIRMED));
 
         mockMvc.perform(
                         get("/orders/1")
