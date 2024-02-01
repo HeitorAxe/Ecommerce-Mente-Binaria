@@ -8,8 +8,10 @@ import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
@@ -17,13 +19,14 @@ import reactor.core.publisher.Mono;
 import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.*;
 import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.*;
 
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = { "/sql/import_orders.sql" }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = { "/sql/remove_orders.sql" }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class OrderIT {
-
     @Autowired
     WebTestClient testClient;
+
 
     @Test
     void deleteOrder_WithValidData_ReturnCreatedProductWithOrderStatusCanceledAndStatus201() {

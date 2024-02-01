@@ -1,9 +1,7 @@
 package com.compassuol.sp.challenge.ecommerce.common;
 
-import com.compassuol.sp.challenge.ecommerce.order.dto.AddressDTO;
-import com.compassuol.sp.challenge.ecommerce.order.dto.OrderCreateDTO;
-import com.compassuol.sp.challenge.ecommerce.order.dto.OrderHasProductDTO;
-import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
+
+import com.compassuol.sp.challenge.ecommerce.order.dto.*;
 import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.OrderMapper;
 import com.compassuol.sp.challenge.ecommerce.order.entity.Address;
 import com.compassuol.sp.challenge.ecommerce.order.entity.Order;
