@@ -137,7 +137,7 @@ public class OrderIT {
                 .bodyValue(VALID_CREATE_ORDER_DTO)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(ErrorMessage.class)
+                .expectBody(OrderResponseDTO.class)
                 .returnResult().getResponseBody();
     }
 
