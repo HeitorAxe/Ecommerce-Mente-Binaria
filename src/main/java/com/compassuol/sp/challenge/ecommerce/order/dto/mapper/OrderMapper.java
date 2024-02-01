@@ -25,8 +25,9 @@ import static org.apache.commons.io.IOUtils.skip;
 public class OrderMapper {
     ProductService productService;
 
-    public static Order toOrder(OrderCreateDTO dto, Order order) {
+    public static Order toOrder(OrderCreateDTO dto) {
         ModelMapper mapper = new ModelMapper();
+        Order order = new Order();
         order.setAddress(mapper.map(dto.getAddress(), Address.class));
         order.setPaymentMethod(PaymentMethod.valueOf(dto.getPaymentMethod()));
         return order;
@@ -50,7 +51,6 @@ public class OrderMapper {
     public static List<OrderResponseDTO> toListDto(List<Order> orders) {
         return orders.stream().map(order -> toDTO(order)).collect(Collectors.toList());
     }
-
     public static void toAddress(AddressDTO dto, Address address) {
         if(dto.getCity()==null)
             address.setCity(dto.getCity());
@@ -63,7 +63,6 @@ public class OrderMapper {
         address.setComplement(dto.getComplement());
         address.setPostalCode(dto.getPostalCode());
     }
-
 
     public static void updateOrder(Order order, OrderUpdateDTO orderDto,
                                    ProductRepository productRepository, AddressRepository addressRepository,
@@ -84,10 +83,16 @@ public class OrderMapper {
 
     private static void updateOrderProducts(Order order, List<OrderHasProductDTO> productDTOList, ProductRepository productRepository) {
         order.getProducts().clear();
-        for(OrderHasProductDTO orderProduct: productDTOList)
-            order.addProduct(productRepository.findById(orderProduct.getProductId()).orElseThrow(
-                    () -> new EntityNotFoundException(String.format("Product with id %s not found", orderProduct.getProductId()))
-            ), orderProduct.getQuantity());
+        if (productDTOList != null) {
+            for (OrderHasProductDTO orderProduct : productDTOList) {
+                Product product = productRepository.findById(orderProduct.getProductId()).orElseThrow(
+                        () -> new EntityNotFoundException(String.format("Product with id %s not found", orderProduct.getProductId()))
+                );
+                order.addProduct(product, orderProduct.getQuantity());
+            }
+        } else {
+            System.out.println("Warning: productDTOList is null.");
+        }
     }
 
     private static void updateOrderAddress(Order order, AddressDTO addressDTO, AddressRepository addressRepository, ViaCepConsumerFeign viaCepConsumerFeign) {
@@ -103,7 +108,5 @@ public class OrderMapper {
             order.setAddress(address);
         }
     }
-
-
 
 }

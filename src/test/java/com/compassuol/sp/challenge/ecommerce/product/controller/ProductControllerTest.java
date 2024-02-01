@@ -47,7 +47,7 @@ class ProductControllerTest {
     ProductRepository productRepository;
 
     @Test
-    void createPlanet_WithValidData_ReturnsCreated() throws Exception {
+    void createProduct_WithValidData_ReturnsCreated() throws Exception {
 
         when(productService.createProduct(PRODUCT_CREATE_DTO)).thenReturn(PRODUCT_RESPONSE_DTO);
 
@@ -76,7 +76,7 @@ class ProductControllerTest {
     }
 
     @Test
-    void getProduct_ByExistingId_ReturnsPlanet() throws Exception {
+    void getProduct_ByExistingId_ReturnsProduct() throws Exception {
         when(productService.getById(1L)).thenReturn(PRODUCT_RESPONSE_DTO);
 
         mockMvc.perform(
