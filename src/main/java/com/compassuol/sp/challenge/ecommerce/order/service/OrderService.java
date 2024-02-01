@@ -49,10 +49,10 @@ public class OrderService {
 
     @Transactional
     public OrderResponseDTO getbyId(Long id) {
-    Order order = orderRepository.findById(id).orElseThrow(
+        Order order = orderRepository.findById(id).orElseThrow(
             () -> new EntityNotFoundException(String.format("Order %d not found", id))
-    );
-    return OrderMapper.toDTO(order);
+        );
+        return OrderMapper.toDTO(order);
     }
 
     public List<Order> getAll() {

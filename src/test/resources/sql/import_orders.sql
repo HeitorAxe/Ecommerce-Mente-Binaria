@@ -1,3 +1,5 @@
+
+insert into ADDRESS (id, number, complement, postalCode, city, street, state) values (1, 16, 'Em frente a praça', '68990-000', 'Tartarugalzinho', 'Perpétuo Socorro', 'Amapá');
 insert into ADDRESSES (id, city, complement, number, postal_code, state, street) values (100, 'São Paulo', 'Próximo a av. Pitanga', 10, '01001000', 'SC',  'Praça da Sé');
 insert into ADDRESSES (id, city, complement, number, postal_code, state, street) values (101, 'São Paulo', 'Próximo a av. Pitanga', 10, '01001000', 'SC',  'Praça da Sé');
 insert into ADDRESSES (id, city, complement, number, postal_code, state, street) values (102, 'São Paulo', 'Próximo a av. Pitanga', 10, '01001000', 'SC',  'Praça da Sé');
