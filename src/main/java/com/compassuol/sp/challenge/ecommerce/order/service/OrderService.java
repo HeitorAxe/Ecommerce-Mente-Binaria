@@ -3,6 +3,7 @@ package com.compassuol.sp.challenge.ecommerce.order.service;
 import com.compassuol.sp.challenge.ecommerce.order.consumer.ViaCepConsumerFeign;
 import com.compassuol.sp.challenge.ecommerce.order.dto.*;
 import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.OrderMapper;
+import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.PageableMapper;
 import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.ViaCepResponseMapper;
 import com.compassuol.sp.challenge.ecommerce.order.entity.Address;
 import com.compassuol.sp.challenge.ecommerce.order.entity.Order;
@@ -13,7 +14,6 @@ import com.compassuol.sp.challenge.ecommerce.order.exception.OrderStatusNotAutho
 import com.compassuol.sp.challenge.ecommerce.order.repository.AddressRepository;
 import com.compassuol.sp.challenge.ecommerce.order.repository.OrderRepository;
 import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
-import com.compassuol.sp.challenge.ecommerce.product.dto.mapper.PageableMapper;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -70,7 +70,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public PageableDTO getAllAsPage(Pageable pageable) {
-        return PageableMapper.toDTO(orderRepository.findAllAsProjection(pageable));
+        return PageableMapper.toDto(orderRepository.findAll(pageable));
     }
 
     @Transactional

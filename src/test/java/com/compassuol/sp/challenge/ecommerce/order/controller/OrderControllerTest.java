@@ -91,12 +91,18 @@ class OrderControllerTest {
     }
 
     @Test
-    void getAllAsPage() {
-    }
+    void listOrder_ReturnsAllOrder() throws Exception{
+        OrderResponseDTO orderResponseDTO= new OrderResponseDTO();
+        List<OrderResponseDTO> orders =new ArrayList<>();
+        orders.add(orderResponseDTO);
+        when(orderService.getAll()).thenReturn(orders);
+        mockMvc
+                .perform(
+                        get("/orders"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$",hasSize(1)));
 
 
-    @Test
-    void getById() {
     }
 
     @Test
