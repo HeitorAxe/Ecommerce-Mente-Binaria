@@ -64,8 +64,8 @@ public class OrderService {
         return OrderMapper.toDTO(order);
     }
 
-    public List<Order> getAll() {
-        return orderRepository.findAll();
+    public List<OrderResponseDTO> getAll() {
+        return OrderMapper.toListDto(orderRepository.findAll());
     }
 
     @Transactional(readOnly = true)

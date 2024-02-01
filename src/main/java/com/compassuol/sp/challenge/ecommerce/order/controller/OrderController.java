@@ -71,7 +71,7 @@ public class OrderController {
     @GetMapping
     public ResponseEntity<List<OrderResponseDTO>>getAll(){
         List<Order> orders = orderService.getAll();
-        return ResponseEntity.ok(OrderMapper.toListDto(orders));
+        return ResponseEntity.ok(orders);
     }
 
     @Operation(summary = "Retrieve a order by id", description = "This operation allows clients to retrieve details of an order based on its unique identifier. No authentication is required for this operation ",
