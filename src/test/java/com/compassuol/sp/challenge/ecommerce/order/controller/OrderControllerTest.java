@@ -90,7 +90,22 @@ class OrderControllerTest {
     }
 
     @Test
-    void getById() {
+    void getById_WithValidId() throws Exception {
+        OrderResponseDTO sut = orderService.getbyId(ORDER_WITH_STATUS_CONFIRMED.getId());
+        when(orderService.getbyId(1L)).thenReturn(sut);
+
+        mockMvc.perform(
+                get("/orders/1")
+        ).andExpect(status().isOk());
+    }
+
+    @Test
+    void getById_WithInvalidId() throws Exception {
+        when(orderService.getbyId(1L)).thenThrow(EntityNotFoundException.class);
+
+        mockMvc.perform(
+                get("/orders/1")
+        ).andExpect(status().isNotFound());
     }
 
     @Test

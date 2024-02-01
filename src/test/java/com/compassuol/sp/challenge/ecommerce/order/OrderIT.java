@@ -3,18 +3,14 @@ package com.compassuol.sp.challenge.ecommerce.order;
 import com.compassuol.sp.challenge.ecommerce.handler.ErrorMessage;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderDeleteDTO;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
-import com.compassuol.sp.challenge.ecommerce.product.dto.ProductCreateDTO;
-import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Mono;
 
 import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.*;
 import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.*;
@@ -129,6 +125,30 @@ public class OrderIT {
                 .returnResult().getResponseBody();
     }
 
+    @Test
+    void getOrderById_WithValidId_returnStatus200(){
+        testClient.method(HttpMethod.GET)
+                .uri("/orders/100")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody();
+    }
+    @Test
+    void getOrderById_WithNonexistentId_returnStatus400(){
+        testClient.method(HttpMethod.GET)
+                .uri("/orders/0")
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody();
+    }
 
+    @Test
+    void getOrderById_WithInvalidId_return404(){
+        testClient.method(HttpMethod.GET)
+                .uri("/orders/-5")
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody();
+    }
 
 }
