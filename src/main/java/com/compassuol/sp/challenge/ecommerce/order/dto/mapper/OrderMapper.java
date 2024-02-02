@@ -11,16 +11,12 @@ import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
 import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
 import jakarta.persistence.EntityNotFoundException;
-import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static org.apache.commons.io.IOUtils.skip;
 
 public class OrderMapper {
     ProductService productService;
@@ -82,8 +78,8 @@ public class OrderMapper {
     }
 
     private static void updateOrderProducts(Order order, List<OrderHasProductDTO> productDTOList, ProductRepository productRepository) {
-        order.getProducts().clear();
         if (productDTOList != null) {
+            order.getProducts().clear();
             for (OrderHasProductDTO orderProduct : productDTOList) {
                 Product product = productRepository.findById(orderProduct.getProductId()).orElseThrow(
                         () -> new EntityNotFoundException(String.format("Product with id %s not found", orderProduct.getProductId()))

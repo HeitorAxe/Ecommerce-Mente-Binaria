@@ -14,11 +14,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AddressDTO {
-    @NotNull(message = "Must specify payment number")
-    private int number;
-    @NotBlank(message = "Must specify payment complement")
+    @NotNull(message = "Must specify address number")
+    private Integer number;
+    @NotBlank(message = "Must specify address complement")
     private String complement;
-    @NotBlank(message = "Must specify payment postal code")
+    @NotBlank(message = "Must specify address postal code")
     private String postalCode;
 
     private String city;

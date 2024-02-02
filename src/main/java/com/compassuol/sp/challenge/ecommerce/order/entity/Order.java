@@ -1,13 +1,11 @@
 package com.compassuol.sp.challenge.ecommerce.order.entity;
 
-import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.OrderMapper;
 import com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus;
 import com.compassuol.sp.challenge.ecommerce.order.enums.PaymentMethod;
 import com.compassuol.sp.challenge.ecommerce.order.exception.OrderStatusNotAuthorizedException;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -25,6 +23,7 @@ import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.CONF
 @Entity
 @Table(name = "orders")
 public class Order implements Serializable {
+    public static Double DISCOUNT_PERCENTAGE = 0.05;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -71,13 +70,17 @@ public class Order implements Serializable {
 
 
     public void addProduct(Product product, int quantity){
-        for (int i =0 ; i<quantity; i++){
+        for (int i =0 ; i<quantity; i++)
             this.getProducts().add(product);
-            this.subTotalValue+=product.getPrice();
-        }
-        totalValue = subTotalValue;
-        if(paymentMethod==PaymentMethod.PIX)
-            totalValue-=totalValue/100.0 * 5.0;
+    }
+    @PrePersist
+    @PreUpdate
+    public void processValue(){
+        this.subTotalValue = 0.0;
+        this.products.forEach(product -> this.subTotalValue+=product.getPrice());
+        this.totalValue = this.subTotalValue;
+        if (this.paymentMethod==PaymentMethod.PIX)
+            this.totalValue -= this.totalValue * DISCOUNT_PERCENTAGE;
     }
 
     public void cancel(String cancelReason){
