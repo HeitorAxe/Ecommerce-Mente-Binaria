@@ -1,17 +1,13 @@
 package com.compassuol.sp.challenge.ecommerce.order.controller;
 
-import com.compassuol.sp.challenge.ecommerce.common.OrderConstants;
 import com.compassuol.sp.challenge.ecommerce.order.consumer.ViaCepConsumerFeign;
-import com.compassuol.sp.challenge.ecommerce.order.dto.*;
-import com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus;
+import com.compassuol.sp.challenge.ecommerce.order.dto.OrderDeleteDTO;
+import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
+import com.compassuol.sp.challenge.ecommerce.order.dto.OrderUpdateDTO;
 import com.compassuol.sp.challenge.ecommerce.order.exception.OrderStatusNotAuthorizedException;
 import com.compassuol.sp.challenge.ecommerce.order.repository.AddressRepository;
 import com.compassuol.sp.challenge.ecommerce.order.repository.OrderRepository;
 import com.compassuol.sp.challenge.ecommerce.order.service.OrderService;
-import com.compassuol.sp.challenge.ecommerce.product.controller.ProductController;
-import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
-import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
@@ -23,16 +19,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
 import java.util.Optional;
+
 import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.*;
-import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.PRODUCT_RESPONSE_DTO;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(OrderController.class)

@@ -2,7 +2,10 @@ package com.compassuol.sp.challenge.ecommerce.handler;
 
 
 import com.compassuol.sp.challenge.ecommerce.order.exception.OrderStatusNotAuthorizedException;
+import com.compassuol.sp.challenge.ecommerce.order.exception.PostalCodeNotFoundException;
 import com.compassuol.sp.challenge.ecommerce.product.exception.ProductNameUniqueViolationException;
+import feign.FeignException;
+import feign.RetryableException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -90,6 +93,31 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, "Invalid query data."));
+    }
+
+    @ExceptionHandler({PostalCodeNotFoundException.class})
+    public ResponseEntity<ErrorMessage> handlePostalCodeNotFoundException(PostalCodeNotFoundException ex, HttpServletRequest request){
+        log.error("API ERROR: ", ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, ex.getMessage()));
+    }
+
+    @ExceptionHandler({RetryableException.class})
+    public ResponseEntity<ErrorMessage> handleRetryableException(RetryableException ex, HttpServletRequest request){
+        log.error("API ERROR: ", ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.INTERNAL_SERVER_ERROR, "Could not connect to ViaCepApi"));
+    }
+
+
+    @ExceptionHandler({FeignException.BadRequest.class})
+    public ResponseEntity<ErrorMessage> handle(FeignException.BadRequest ex, HttpServletRequest request){
+        log.error("API ERROR: ", ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, "Postal code format not supported"));
     }
 
 }
