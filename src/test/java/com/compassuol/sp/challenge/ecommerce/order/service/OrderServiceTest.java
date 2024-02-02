@@ -8,7 +8,6 @@ import com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus;
 import com.compassuol.sp.challenge.ecommerce.order.exception.OrderStatusNotAuthorizedException;
 import com.compassuol.sp.challenge.ecommerce.order.repository.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,6 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
+
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -33,18 +35,37 @@ class OrderServiceTest {
     OrderService orderService;
     @Mock
     OrderRepository orderRepository;
-    @AfterEach
-    public void afterEach(){
-        ORDER_WITH_STATUS_CONFIRMED.setId(null);
-        ORDER_WITH_STATUS_SENT.setId(null);
-        //ORDER_WITH_ID.setId(null);
-    }
     @Test
     void createOrder() {
     }
 
     @Test
-    void getbyId() {
+    void getbyId_WithValidDatas_ReturnOrderResponseDto() {
+        when(orderRepository.findById(anyLong())).thenReturn(Optional.of(ORDER_WITH_STATUS_CONFIRMED));
+        OrderResponseDTO dto = orderService.getbyId(ORDER_WITH_STATUS_CONFIRMED.getId());
+        OrderResponseDTO expectedDto = new OrderResponseDTO();
+        expectedDto.setAddress(dto.getAddress());
+        expectedDto.setPaymentMethod(dto.getPaymentMethod());
+        expectedDto.setOrderStatus(dto.getOrderStatus());
+        expectedDto.setTotalValue(dto.getTotalValue());
+        expectedDto.setSubTotalValue(dto.getSubTotalValue());
+        expectedDto.setProducts(dto.getProducts());
+        expectedDto.setCreationDate(dto.getCreationDate());
+        assertThat(dto).isNotNull();
+        assertThat(dto.getProducts()).isEqualTo(expectedDto.getProducts());
+        assertThat(dto.getCreationDate()).isEqualTo(expectedDto.getCreationDate());
+        assertThat(dto.getPaymentMethod()).isEqualTo(expectedDto.getPaymentMethod());
+        assertThat(dto.getAddress()).isEqualTo(expectedDto.getAddress());
+        assertThat(dto.getSubTotalValue()).isEqualTo(expectedDto.getSubTotalValue());
+
+        verify(orderRepository, times(1)).findById(eq(ORDER_WITH_STATUS_CONFIRMED.getId()));
+
+    }
+
+    @Test
+    void getById_WithInvalidDatas_ThrowsException(){
+        assertThatThrownBy(()-> orderService.getbyId(ORDER_WITH_STATUS_CONFIRMED.getId())).isInstanceOf(EntityNotFoundException.class)
+                .hasMessage(String.format("Order %d not found", ORDER_WITH_STATUS_CONFIRMED.getId()));
     }
 
     @Test
@@ -65,9 +86,9 @@ class OrderServiceTest {
     @Test
     void removeOrder_WithInvalidOrderStatus_DoesThrowOrderStatusNotAuthorized() {
         OrderDeleteDTO delete = new OrderDeleteDTO("Não gostei do produto");
-        when(orderRepository.findById(any())).thenReturn(Optional.of(ORDER_WITH_STATUS_SENT));
+        when(orderRepository.findById(ORDER_WITH_STATUS_SENT.getId())).thenReturn(Optional.of(ORDER_WITH_STATUS_SENT));
 
-        assertThatThrownBy(() -> orderService.removeOrder(ORDER_WITH_STATUS_CONFIRMED.getId(), delete)).isInstanceOf(OrderStatusNotAuthorizedException.class);
+        assertThatThrownBy(() -> orderService.removeOrder(ORDER_WITH_STATUS_SENT.getId(), delete)).isInstanceOf(OrderStatusNotAuthorizedException.class);
     }
 
     @Test
@@ -92,5 +113,4 @@ class OrderServiceTest {
         assertThatThrownBy(() -> orderService.updateOrder(999L, updateDto))
                 .isInstanceOf(EntityNotFoundException.class);
     }
-
 }

@@ -123,8 +123,25 @@ public class OrderIT {
                 .returnResult().getResponseBody();
     }
 
+    @Test
+    void getOrderById_WithValidId_returnStatus200(){
+        testClient.method(HttpMethod.GET)
+                .uri("/orders/100")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody();
+    }
+    @Test
+    void getOrderById_WithNonexistentId_returnStatus400(){
+        testClient.method(HttpMethod.GET)
+                .uri("/orders/0")
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody();
+    }
 
     @Test
+
     void updateOrder_WithvalidParameter_ReturnsStatusOk200(){
         testClient.method(HttpMethod.PUT)
                 .uri("/orders/100")
@@ -164,6 +181,7 @@ public class OrderIT {
                 .returnResult().getResponseBody();
     }
 
+
     @Test
     void updateOrder_WithInvalidParameter_ReturnsStatus405(){
         testClient.method(HttpMethod.PUT)
@@ -172,5 +190,14 @@ public class OrderIT {
                 .expectStatus().isEqualTo(405)
                 .expectBody(ErrorMessage.class)
                 .returnResult().getResponseBody();
+    }
+
+    @Test
+    void getOrderById_WithInvalidId_return404() {
+        testClient.method(HttpMethod.GET)
+                .uri("/orders/-5")
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody();
     }
 }

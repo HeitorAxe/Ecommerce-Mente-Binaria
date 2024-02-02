@@ -5,6 +5,7 @@ import com.compassuol.sp.challenge.ecommerce.order.dto.*;
 import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.OrderMapper;
 import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.ViaCepResponseMapper;
 import com.compassuol.sp.challenge.ecommerce.order.entity.Order;
+import com.compassuol.sp.challenge.ecommerce.order.exception.PostalCodeNotFoundException;
 import com.compassuol.sp.challenge.ecommerce.order.repository.AddressRepository;
 import com.compassuol.sp.challenge.ecommerce.order.repository.OrderRepository;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
@@ -37,6 +38,7 @@ public class OrderService {
         });
 
         ViaCepResponseDTO viaCepResponse = viaCepConsumerFeign.getAddressByPostalCode(order.getAddress().getPostalCode());
+        if (viaCepResponse.getPostalCode()==null) throw new PostalCodeNotFoundException("The postal code provided is invalid");
         ViaCepResponseMapper.complementAddress(viaCepResponse, order.getAddress());
 
         addressRepository.save(order.getAddress());
@@ -62,14 +64,13 @@ public class OrderService {
         order.cancel(deleteDto.getCancelReason());
         return OrderMapper.toDTO(order);
     }
-
+    @Transactional
     public OrderResponseDTO updateOrder(Long id, OrderUpdateDTO orderDto) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Order not found with id: " + id));
         OrderMapper.updateOrder(order, orderDto, productRepository, addressRepository, viaCepConsumerFeign);
+        order.processValue();
         Order updatedOrder = orderRepository.save(order);
         return OrderMapper.toDTO(updatedOrder);
     }
-
-
 }

@@ -78,8 +78,8 @@ public class OrderMapper {
     }
 
     private static void updateOrderProducts(Order order, List<OrderHasProductDTO> productDTOList, ProductRepository productRepository) {
-        order.getProducts().clear();
         if (productDTOList != null) {
+            order.getProducts().clear();
             for (OrderHasProductDTO orderProduct : productDTOList) {
                 Product product = productRepository.findById(orderProduct.getProductId()).orElseThrow(
                         () -> new EntityNotFoundException(String.format("Product with id %s not found", orderProduct.getProductId()))

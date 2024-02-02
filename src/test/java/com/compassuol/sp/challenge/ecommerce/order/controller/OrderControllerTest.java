@@ -1,7 +1,7 @@
 package com.compassuol.sp.challenge.ecommerce.order.controller;
-
 import com.compassuol.sp.challenge.ecommerce.order.consumer.ViaCepConsumerFeign;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderDeleteDTO;
+import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderUpdateDTO;
 import com.compassuol.sp.challenge.ecommerce.order.exception.OrderStatusNotAuthorizedException;
 import com.compassuol.sp.challenge.ecommerce.order.repository.AddressRepository;
@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Optional;
-
 import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -83,7 +82,22 @@ class OrderControllerTest {
     }
 
     @Test
-    void getById() {
+    void getById_WithValidId() throws Exception {
+        OrderResponseDTO sut = orderService.getbyId(ORDER_WITH_STATUS_CONFIRMED.getId());
+        when(orderService.getbyId(1L)).thenReturn(sut);
+
+        mockMvc.perform(
+                get("/orders/1")
+        ).andExpect(status().isOk());
+    }
+
+    @Test
+    void getById_WithInvalidId() throws Exception {
+        when(orderService.getbyId(1L)).thenThrow(EntityNotFoundException.class);
+
+        mockMvc.perform(
+                get("/orders/1")
+        ).andExpect(status().isNotFound());
     }
 
     @Test
