@@ -113,11 +113,19 @@ public class ApiExceptionHandler {
 
 
     @ExceptionHandler({FeignException.BadRequest.class})
-    public ResponseEntity<ErrorMessage> handle(FeignException.BadRequest ex, HttpServletRequest request){
+    public ResponseEntity<ErrorMessage> handleFeignBadRequest(FeignException.BadRequest ex, HttpServletRequest request){
         log.error("API ERROR: ", ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, "Postal code format not supported"));
+    }
+
+    @ExceptionHandler({java.sql.SQLIntegrityConstraintViolationException.class})
+    public ResponseEntity<ErrorMessage> handleInvalidOperation(java.sql.SQLIntegrityConstraintViolationException ex, HttpServletRequest request){
+        log.error("API ERROR: ", ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.INTERNAL_SERVER_ERROR, "Could not execute this operation"));
     }
 
 }

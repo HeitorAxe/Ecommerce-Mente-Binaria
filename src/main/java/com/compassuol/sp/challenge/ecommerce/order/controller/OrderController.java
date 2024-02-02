@@ -86,9 +86,6 @@ public class OrderController {
             })
     @GetMapping("/{id}")
     public ResponseEntity<OrderResponseDTO> getById(@PathVariable Long id) {
-        if(id < 0){
-            return ResponseEntity.badRequest().build();
-        }
         OrderResponseDTO order = orderService.getbyId(id);
         return ResponseEntity.ok(order);
 

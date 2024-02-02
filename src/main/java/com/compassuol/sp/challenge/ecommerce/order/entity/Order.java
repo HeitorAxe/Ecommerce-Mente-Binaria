@@ -91,11 +91,11 @@ public class Order implements Serializable {
             this.cancelReason = cancelReason;
         }else if (this.orderStatus != CONFIRMED){
             throw new OrderStatusNotAuthorizedException(
-                    "O status do pedido deve ser diferente de SENT"
+                    "The order status must be confirmed to be canceled"
             );
         }else if (LocalDateTime.now().isAfter(cancelationPeriod)){
             throw new OrderStatusNotAuthorizedException(
-                    "O cancelamento do pedido só pode ser feito antes de 90 dias da compra"
+                    "The cancelation of the order must be made at most 90 days after the purchase"
             );
         }
     }

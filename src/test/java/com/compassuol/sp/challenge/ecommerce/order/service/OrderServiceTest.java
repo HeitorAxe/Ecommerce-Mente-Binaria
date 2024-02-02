@@ -152,14 +152,6 @@ class OrderServiceTest {
         assertThatThrownBy(() -> orderService.updateOrder(999L, updateDto))
                 .isInstanceOf(EntityNotFoundException.class);
     }
-    @Test
-    void updateOrder_WithInvalidId(){
-
-        OrderUpdateDTO updateDto = new OrderUpdateDTO();
-        when(orderRepository.findById(999L)).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> orderService.updateOrder(999L, updateDto))
-                .isInstanceOf(EntityNotFoundException.class);
-    }
 
 
     @Test

@@ -228,11 +228,13 @@ public class OrderIT {
     }
 
     @Test
-    void getOrderById_WithInvalidId_return404() {
-        testClient.method(HttpMethod.GET)
-                .uri("/orders/-5")
+    void removeProducts_ExistingInAnOrder_ReturnsInternalServerError() {
+        testClient.delete()
+                .uri("/products/100")
                 .exchange()
-                .expectStatus().isBadRequest()
-                .expectBody();
+                .expectStatus().isEqualTo(500);
+
     }
+
+
 }
