@@ -11,6 +11,7 @@ import com.compassuol.sp.challenge.ecommerce.order.service.OrderService;
 import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -50,17 +51,28 @@ public class OrderController {
         OrderResponseDTO order = orderService.createOrder(createDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
-
+    @Operation(summary = "Get all products as pageable", description = "Retrieve products as pageable",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "List of products retrieved successfully as pageable",
+                            content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = PageableDTO.class)))
+            })
+    @GetMapping("/page")
     public ResponseEntity<PageableDTO> getAllAsPage(@PageableDefault(size = 5) Pageable pageable){
-        return null;
-
+       PageableDTO dto = orderService.getAllAsPage(pageable);
+       return ResponseEntity.ok(dto);
     }
+
+    @Operation(summary = "List all registered products", description = "No authentication required",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "List all registered products",
+                            content = @Content(mediaType = "application/json;charset=UTF-8",
+                                    array = @ArraySchema(schema = @Schema(implementation = OrderResponseDTO.class))))
+            })
     @GetMapping
     public ResponseEntity<List<OrderResponseDTO>>getAll(){
-        List<Order> orders = orderService.getAll();
-        return ResponseEntity.ok(OrderMapper.toListDto(orders));
+        List<OrderResponseDTO> orders = orderService.getAll();
+        return ResponseEntity.ok(orders);
     }
-
 
     @Operation(summary = "Retrieve a order by id", description = "This operation allows clients to retrieve details of an order based on its unique identifier. No authentication is required for this operation ",
             responses = {

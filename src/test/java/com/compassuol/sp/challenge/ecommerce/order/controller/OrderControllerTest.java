@@ -1,4 +1,6 @@
 package com.compassuol.sp.challenge.ecommerce.order.controller;
+
+import com.compassuol.sp.challenge.ecommerce.common.OrderConstants;
 import com.compassuol.sp.challenge.ecommerce.order.consumer.ViaCepConsumerFeign;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderDeleteDTO;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
@@ -17,14 +19,23 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Optional;
 import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.*;
+
+import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.PRODUCT;
+import static org.hamcrest.Matchers.hasSize;
+
+import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.PRODUCT_RESPONSE_DTO;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(OrderController.class)
@@ -74,11 +85,16 @@ class OrderControllerTest {
     }
 
     @Test
-    void getAllAsPage() {
-    }
-
-    @Test
-    void getAll() {
+    void listOrder_ReturnsAllOrder() throws Exception {
+        OrderResponseDTO orderResponseDTO = new OrderResponseDTO();
+        List<OrderResponseDTO> orders = new ArrayList<>();
+        orders.add(orderResponseDTO);
+        when(orderService.getAll()).thenReturn(orders);
+        mockMvc
+                .perform(
+                        get("/orders"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test
@@ -99,7 +115,6 @@ class OrderControllerTest {
                 get("/orders/1")
         ).andExpect(status().isNotFound());
     }
-
     @Test
     void removeProduct_WithValidData_ReturnsOrderWithOrderStatusCanceled() throws Exception{
         OrderDeleteDTO dto = new OrderDeleteDTO("odiei o produto");
@@ -147,4 +162,5 @@ class OrderControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
+
 }

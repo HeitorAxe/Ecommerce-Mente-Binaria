@@ -1,6 +1,7 @@
 package com.compassuol.sp.challenge.ecommerce.order;
 
 import com.compassuol.sp.challenge.ecommerce.handler.ErrorMessage;
+import com.compassuol.sp.challenge.ecommerce.order.dto.OrderCreateDTO;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderDeleteDTO;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.reactive.server.WebTestClient;
+
+import java.util.List;
 
 import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.*;
 import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.CONFIRMED;
@@ -98,8 +101,7 @@ public class OrderIT {
                 .bodyValue(INVALID_CREATE_ORDER_DTO)
                 .exchange()
                 .expectStatus().isEqualTo(422)
-                .expectBody(ErrorMessage.class)
-                .returnResult().getResponseBody();
+                .expectBody(ErrorMessage.class);
     }
 
     @Test
@@ -109,8 +111,7 @@ public class OrderIT {
                 .bodyValue(CREATE_ORDER_DTO_NONEXISTEN_PRODUCT_ID)
                 .exchange()
                 .expectStatus().isNotFound()
-                .expectBody(ErrorMessage.class)
-                .returnResult().getResponseBody();
+                .expectBody(ErrorMessage.class);
     }
 
     @Test
@@ -119,8 +120,42 @@ public class OrderIT {
                 .uri("/orders")
                 .exchange()
                 .expectStatus().isBadRequest()
-                .expectBody(ErrorMessage.class)
+                .expectBody(ErrorMessage.class);
+    }
+
+    @Test
+    void createOrder_WithInvalidPostalCode_ReturnsErrorMessageAndStatusBadRequest(){
+        OrderCreateDTO invalidPostalCode = VALID_CREATE_ORDER_DTO;
+        invalidPostalCode.getAddress().setPostalCode("99999999");
+        testClient.method(HttpMethod.POST)
+                .uri("/orders")
+                .bodyValue(VALID_CREATE_ORDER_DTO)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(ErrorMessage.class);
+    }
+
+    @Test
+    void createOrder_NotFormattedPostalCode_ReturnsErrorMessageAndStatusBadRequest(){
+        OrderCreateDTO invalidPostalCode = VALID_CREATE_ORDER_DTO;
+        invalidPostalCode.getAddress().setPostalCode("99999b99");
+        testClient.method(HttpMethod.POST)
+                .uri("/orders")
+                .bodyValue(VALID_CREATE_ORDER_DTO)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(ErrorMessage.class);
+    }
+
+    @Test
+    void listOrder_ReturnOrderListWithStatus200() {
+        List<OrderResponseDTO> responseBody = testClient.get()
+                .uri("/orders")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(OrderResponseDTO.class)
                 .returnResult().getResponseBody();
+
     }
 
     @Test
@@ -131,6 +166,7 @@ public class OrderIT {
                 .expectStatus().isOk()
                 .expectBody();
     }
+  
     @Test
     void getOrderById_WithNonexistentId_returnStatus400(){
         testClient.method(HttpMethod.GET)
@@ -180,7 +216,6 @@ public class OrderIT {
                 .expectBody(ErrorMessage.class)
                 .returnResult().getResponseBody();
     }
-
 
     @Test
     void updateOrder_WithInvalidParameter_ReturnsStatus405(){
