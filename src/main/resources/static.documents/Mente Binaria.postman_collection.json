@@ -4,7 +4,7 @@
 		"name": "Mente Binaria",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "24445962",
-		"_collection_link": "https://bold-meadow-506585.postman.co/workspace/Mente-Bin%25C3%25A1ria~9040a92b-b22c-483f-b895-52130398b9af/collection/32204333-f0a9f881-a2f7-4dea-9068-f17ed70d9987?action=share&source=collection_link&creator=24445962"
+		"_collection_link": "https://bold-meadow-506585.postman.co/workspace/Mente-Bin%C3%A1ria~9040a92b-b22c-483f-b895-52130398b9af/collection/32204333-f0a9f881-a2f7-4dea-9068-f17ed70d9987?action=share&source=collection_link&creator=24445962"
 	},
 	"item": [
 		{
@@ -150,7 +150,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"products\": [\n        {\n            \"productId\": 1,\n            \"quantity\": 2\n        },\n        {\n            \"productId\": 2,\n            \"quantity\": 5\n        }\n    ],\n    \"address\": {\n        \"number\": 10,\n        \"complement\": \"Próximo a av. Pitanga\",\n        \"postalCode\": \"01001000\",\n        \"state\": \"SC\"\n    },\n    \"paymentMethod\": \"PIX\"\n}",
+					"raw": "{\n    \"products\": [\n        {\n            \"productId\": 1,\n            \"quantity\": 2\n        },\n        {\n            \"productId\": 2,\n            \"quantity\": 5\n        }\n    ],\n    \"address\": {\n        \"number\": 10,\n        \"complement\": \"Próximo a av. Pitanga\",\n        \"postalCode\": \"44380000\"\n    },\n    \"paymentMethod\": \"PIX\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -178,7 +178,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"products\": [\r\n        {\r\n            \"productId\": 25,\r\n            \"quantity\": 9\r\n        },\r\n        {\r\n            \"productId\": 29,\r\n            \"quantity\": 7\r\n        }\r\n    ],\r\n    \"address\": {\r\n        \"number\": 107,\r\n        \"complement\": \"ap18\",\r\n        \"postalCode\": \"89803470\",\r\n        \"state\": \"SC\"\r\n    },\r\n    \"paymentMethod\": \"PIX\"\r\n}",
+					"raw": "{\r\n    \"products\": [\r\n        {\r\n            \"productId\": 2,\r\n            \"quantity\": 10\r\n        },\r\n        {\r\n            \"productId\": 2,\r\n            \"quantity\": 5\r\n        }\r\n    ],\r\n    \"address\": {\r\n        \"number\": 107,\r\n        \"complement\": \"ap18\",\r\n        \"postalCode\": \"89803470\",\r\n        \"state\": \"SC\"\r\n    },\r\n    \"paymentMethod\": \"PIX\",\r\n    \"orderStatus\": \"CONFIRMED\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -186,7 +186,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/orders/5",
+					"raw": "http://localhost:8080/orders/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -194,7 +194,7 @@
 					"port": "8080",
 					"path": [
 						"orders",
-						"5"
+						"1"
 					]
 				}
 			},
@@ -204,7 +204,19 @@
 			"name": "Order - GetAll",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/orders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"orders"
+					]
+				},
+				"description": "\n# Get Orders\n\nThis endpoint retrieves a list of orders.\n\n## Response\n\n- Status: 200\n- Content-Type: application/json\n\nThe response body contains an array of order objects, where each order includes the following fields:\n- `id` (number): The unique identifier of the order.\n- `products` (array): An array of objects representing the products in the order, with each object containing `productId` (number) and `quantity` (number) fields.\n- `address` (object): An object containing the address details for the order, including `number` (number), `complement` (string), `postalCode` (string), `city` (string), `street` (string), and `state` (string) fields.\n- `paymentMethod` (string): The payment method used for the order.\n- `orderStatus` (string): The status of the order.\n- `totalValue` (number): The total value of the order.\n- `subTotalValue` (number): The subtotal value of the order.\n- `creationDate` (string): The date of order creation.\n- `cancelationDate` (string): The date of order cancellation, if applicable.\n- `cancelReason` (string): The reason for order cancellation, if applicable.\n\n"
 			},
 			"response": []
 		},
@@ -212,7 +224,29 @@
 			"name": "Order - Delete",
 			"request": {
 				"method": "DELETE",
-				"header": []
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cancelReason\":\"hihihih\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/orders/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"orders",
+						"2"
+					]
+				},
+				"description": "This endpoint sends an HTTP DELETE request to [http://localhost:8080/orders/6](http://localhost:8080/orders/6) to delete a specific order.\n\nThe request does not require any payload in the raw request body.\n\n### Response\n\n- Status: 422\n- Content-Type: application/json\n    \n\n``` json\n{\n    \"path\":\"\",\n    \"method\":\"\",\n    \"status\":0,\n    \"statusText\":\"\",\n    \"message\":\"\",\n    \"details\":{\n        \"cancelReason\":\"\"\n    }\n}\n\n ```"
 			},
 			"response": []
 		},
@@ -220,7 +254,20 @@
 			"name": "Order - GetById",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/orders/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"orders",
+						"1"
+					]
+				},
+				"description": "This API endpoint retrieves the details of a specific order with the ID \"2a\". However, the last execution resulted in a 400 Bad Request response with an empty JSON body. The response did not provide any specific error message or details."
 			},
 			"response": []
 		},
@@ -228,7 +275,34 @@
 			"name": "Order - GetAllAsPage",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/orders/page?page=0&size=1&sort=totalValue",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"orders",
+						"page"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "1"
+						},
+						{
+							"key": "sort",
+							"value": "totalValue"
+						}
+					]
+				},
+				"description": "This endpoint retrieves the details of a specific order by providing the order ID in the URL. The response will contain information about the products in the order, the delivery address, payment method, order status, total and sub-total values, creation date, cancellation date, and cancellation reason if applicable.\n\nThe response will be in JSON format with the following structure:\n\n- id: The ID of the order\n- products: An array containing the details of the products in the order, including product ID and quantity\n- address: An object containing the delivery address details such as number, complement, postal code, city, street, and state\n- paymentMethod: The method used for payment\n- orderStatus: The current status of the order\n- totalValue: The total value of the order\n- subTotalValue: The sub-total value of the order\n- creationDate: The date and time when the order was created\n- cancelationDate: The date and time when the order was cancelled, if applicable\n- cancelReason: The reason for order cancellation, if applicable\n    \n\nThe status of the last execution was 200, and the content type of the response was \"application/json\"."
 			},
 			"response": []
 		}
