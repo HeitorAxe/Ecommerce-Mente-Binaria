@@ -19,6 +19,12 @@ import static com.compassuol.sp.challenge.ecommerce.order.enums.PaymentMethod.PI
 
 public class OrderConstants {
 
+    private static Order ORDER_CONFIRMED;
+    private static Order ORDER_SENT;
+    private static Order ORDER_CANCELED;
+    private static Product product;
+    public static final Order ORDER = new Order();
+
     private static Address address = new Address(1L, 16, "Em frente a praça", "68990-000", "Tartarugalzinho", "Perpétuo Socorro", "Amapá");
 
     public static Order ORDER_WITH_STATUS_CONFIRMED = new Order(100L, address, PIX, CONFIRMED, true, 950.00, 1000.00, new ArrayList<>(), LocalDateTime.now(), null, null);

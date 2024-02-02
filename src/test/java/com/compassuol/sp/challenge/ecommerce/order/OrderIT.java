@@ -10,6 +10,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
+import java.util.List;
+
 import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.*;
 import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.CONFIRMED;
 
@@ -124,6 +126,17 @@ public class OrderIT {
     }
 
     @Test
+    void listOrder_ReturnOrderListWithStatus200() {
+        List<OrderResponseDTO> responseBody = testClient.get()
+                .uri("/orders")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(OrderResponseDTO.class)
+                .returnResult().getResponseBody();
+
+    }
+
+    @Test
     void getOrderById_WithValidId_returnStatus200(){
         testClient.method(HttpMethod.GET)
                 .uri("/orders/100")
@@ -131,6 +144,7 @@ public class OrderIT {
                 .expectStatus().isOk()
                 .expectBody();
     }
+  
     @Test
     void getOrderById_WithNonexistentId_returnStatus400(){
         testClient.method(HttpMethod.GET)
@@ -180,7 +194,6 @@ public class OrderIT {
                 .expectBody(ErrorMessage.class)
                 .returnResult().getResponseBody();
     }
-
 
     @Test
     void updateOrder_WithInvalidParameter_ReturnsStatus405(){
