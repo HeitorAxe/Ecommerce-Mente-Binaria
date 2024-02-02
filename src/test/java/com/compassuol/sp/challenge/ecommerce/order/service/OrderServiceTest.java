@@ -1,12 +1,17 @@
 package com.compassuol.sp.challenge.ecommerce.order.service;
 
+import com.compassuol.sp.challenge.ecommerce.common.ProductConstants;
+import com.compassuol.sp.challenge.ecommerce.order.consumer.ViaCepConsumerFeign;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderDeleteDTO;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
+import com.compassuol.sp.challenge.ecommerce.order.dto.ViaCepResponseDTO;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderUpdateDTO;
 import com.compassuol.sp.challenge.ecommerce.order.entity.Order;
 import com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus;
 import com.compassuol.sp.challenge.ecommerce.order.exception.OrderStatusNotAuthorizedException;
+import com.compassuol.sp.challenge.ecommerce.order.repository.AddressRepository;
 import com.compassuol.sp.challenge.ecommerce.order.repository.OrderRepository;
+import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
 
 import com.compassuol.sp.challenge.ecommerce.order.repository.projection.OrderProjection;
 import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
@@ -46,8 +51,27 @@ class OrderServiceTest {
     OrderService orderService;
     @Mock
     OrderRepository orderRepository;
+    @Mock
+    ProductRepository productRepository;
+    @Mock
+    ViaCepConsumerFeign viaCepConsumerFeign;
+    @Mock
+    AddressRepository addressRepository;
+
     @Test
-    void createOrder() {
+    void createOrder_WithValidData_ReturnsOrderResponseDTO() {
+        ViaCepResponseDTO viaCepResponseDTO = new ViaCepResponseDTO("44380000", "Minha rua", "meu bairro", "meuestadp");
+        when(productRepository.findById(anyLong())).thenReturn(Optional.of(ProductConstants.PRODUCT_WITH_ID));
+        when(viaCepConsumerFeign.getAddressByPostalCode(any())).thenReturn(viaCepResponseDTO);
+        OrderResponseDTO response = orderService.createOrder(VALID_CREATE_ORDER_DTO);
+        assertThat(response).isNotNull();
+        assertThat(response.getProducts().get(0).getProductId()).isEqualTo(ProductConstants.PRODUCT_WITH_ID.getId());
+    }
+
+    @Test
+    void createOrder_WithNonexitentProductId_ThrowsEntityNotFoundException() {
+        when(productRepository.findById(anyLong())).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> orderService.createOrder(VALID_CREATE_ORDER_DTO)).isInstanceOf(EntityNotFoundException.class);
     }
 
 

@@ -1,6 +1,7 @@
 package com.compassuol.sp.challenge.ecommerce.order;
 
 import com.compassuol.sp.challenge.ecommerce.handler.ErrorMessage;
+import com.compassuol.sp.challenge.ecommerce.order.dto.OrderCreateDTO;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderDeleteDTO;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
 import org.junit.jupiter.api.Test;
@@ -100,8 +101,7 @@ public class OrderIT {
                 .bodyValue(INVALID_CREATE_ORDER_DTO)
                 .exchange()
                 .expectStatus().isEqualTo(422)
-                .expectBody(ErrorMessage.class)
-                .returnResult().getResponseBody();
+                .expectBody(ErrorMessage.class);
     }
 
     @Test
@@ -111,8 +111,7 @@ public class OrderIT {
                 .bodyValue(CREATE_ORDER_DTO_NONEXISTEN_PRODUCT_ID)
                 .exchange()
                 .expectStatus().isNotFound()
-                .expectBody(ErrorMessage.class)
-                .returnResult().getResponseBody();
+                .expectBody(ErrorMessage.class);
     }
 
     @Test
@@ -121,8 +120,31 @@ public class OrderIT {
                 .uri("/orders")
                 .exchange()
                 .expectStatus().isBadRequest()
-                .expectBody(ErrorMessage.class)
-                .returnResult().getResponseBody();
+                .expectBody(ErrorMessage.class);
+    }
+
+    @Test
+    void createOrder_WithInvalidPostalCode_ReturnsErrorMessageAndStatusBadRequest(){
+        OrderCreateDTO invalidPostalCode = VALID_CREATE_ORDER_DTO;
+        invalidPostalCode.getAddress().setPostalCode("99999999");
+        testClient.method(HttpMethod.POST)
+                .uri("/orders")
+                .bodyValue(VALID_CREATE_ORDER_DTO)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(ErrorMessage.class);
+    }
+
+    @Test
+    void createOrder_NotFormattedPostalCode_ReturnsErrorMessageAndStatusBadRequest(){
+        OrderCreateDTO invalidPostalCode = VALID_CREATE_ORDER_DTO;
+        invalidPostalCode.getAddress().setPostalCode("99999b99");
+        testClient.method(HttpMethod.POST)
+                .uri("/orders")
+                .bodyValue(VALID_CREATE_ORDER_DTO)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(ErrorMessage.class);
     }
 
     @Test
