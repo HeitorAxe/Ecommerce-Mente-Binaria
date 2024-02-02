@@ -183,7 +183,6 @@ public class OrderIT {
                 .returnResult().getResponseBody();
     }
 
-    }
 
     @Test
     void updateOrder_WithInvalidParameter_ReturnsStatus405(){

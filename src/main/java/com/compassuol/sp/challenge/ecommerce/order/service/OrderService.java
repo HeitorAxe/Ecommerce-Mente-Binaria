@@ -10,10 +10,12 @@ import com.compassuol.sp.challenge.ecommerce.order.entity.Order;
 import com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus;
 import com.compassuol.sp.challenge.ecommerce.order.enums.PaymentMethod;
 import com.compassuol.sp.challenge.ecommerce.order.exception.OrderStatusNotAuthorizedException;
+import com.compassuol.sp.challenge.ecommerce.order.exception.PostalCodeNotFoundException;
 import com.compassuol.sp.challenge.ecommerce.order.repository.AddressRepository;
 import com.compassuol.sp.challenge.ecommerce.order.repository.OrderRepository;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
+import feign.FeignException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -46,6 +48,7 @@ public class OrderService {
         });
 
         ViaCepResponseDTO viaCepResponse = viaCepConsumerFeign.getAddressByPostalCode(order.getAddress().getPostalCode());
+        if (viaCepResponse.getPostalCode()==null) throw new PostalCodeNotFoundException("The postal code provided is invalid");
         ViaCepResponseMapper.complementAddress(viaCepResponse, order.getAddress());
 
         addressRepository.save(order.getAddress());
