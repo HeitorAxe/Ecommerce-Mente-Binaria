@@ -87,8 +87,8 @@ public class ApiExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, "Invalid Data."));
     }
 
-    @ExceptionHandler({org.hibernate.query.sqm.UnknownPathException.class})
-    public ResponseEntity<ErrorMessage> handleInvalidDataAccessApiUsageException(org.hibernate.query.sqm.UnknownPathException ex, HttpServletRequest request){
+    @ExceptionHandler({org.hibernate.query.sqm.UnknownPathException.class, org.springframework.data.mapping.PropertyReferenceException.class })
+    public ResponseEntity<ErrorMessage> handleInvalidDataAccessApiUsageException(RuntimeException ex, HttpServletRequest request){
         log.error("API ERROR: ", ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
