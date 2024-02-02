@@ -1,29 +1,21 @@
 package com.compassuol.sp.challenge.ecommerce.common;
 
 
-import com.compassuol.sp.challenge.ecommerce.order.dto.*;
+import com.compassuol.sp.challenge.ecommerce.order.dto.AddressDTO;
+import com.compassuol.sp.challenge.ecommerce.order.dto.OrderCreateDTO;
+import com.compassuol.sp.challenge.ecommerce.order.dto.OrderHasProductDTO;
+import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
 import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.OrderMapper;
 import com.compassuol.sp.challenge.ecommerce.order.entity.Address;
 import com.compassuol.sp.challenge.ecommerce.order.entity.Order;
-import com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
-import org.aspectj.weaver.ast.Or;
-
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.CONFIRMED;
-import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.SENT;
-import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.CANCELED;
-
+import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.*;
 import static com.compassuol.sp.challenge.ecommerce.order.enums.PaymentMethod.PIX;
-import static com.compassuol.sp.challenge.ecommerce.order.enums.PaymentMethod.BANK_TRANSFER;
-import static com.compassuol.sp.challenge.ecommerce.order.enums.PaymentMethod.CREDIT_CARD;
-import static com.compassuol.sp.challenge.ecommerce.order.enums.PaymentMethod.CRYPTOCURRENCY;
-import static com.compassuol.sp.challenge.ecommerce.order.enums.PaymentMethod.GIFT_CARD;
-import static com.compassuol.sp.challenge.ecommerce.order.enums.PaymentMethod.OTHER;
 
 public class OrderConstants {
 

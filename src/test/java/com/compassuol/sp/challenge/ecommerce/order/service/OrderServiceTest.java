@@ -1,16 +1,12 @@
 package com.compassuol.sp.challenge.ecommerce.order.service;
 
-import com.compassuol.sp.challenge.ecommerce.common.OrderConstants;
-import com.compassuol.sp.challenge.ecommerce.common.ProductConstants;
-import com.compassuol.sp.challenge.ecommerce.order.dto.*;
-import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.OrderMapper;
+import com.compassuol.sp.challenge.ecommerce.order.dto.OrderDeleteDTO;
+import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
+import com.compassuol.sp.challenge.ecommerce.order.dto.OrderUpdateDTO;
 import com.compassuol.sp.challenge.ecommerce.order.entity.Order;
 import com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus;
 import com.compassuol.sp.challenge.ecommerce.order.exception.OrderStatusNotAuthorizedException;
 import com.compassuol.sp.challenge.ecommerce.order.repository.OrderRepository;
-import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
-import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
-import com.compassuol.sp.challenge.ecommerce.product.exception.ProductNameUniqueViolationException;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -18,25 +14,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.ui.ModelMap;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
-import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.*;
-import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.*;
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.ORDER_WITH_STATUS_CONFIRMED;
+import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.ORDER_WITH_STATUS_SENT;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.RequestEntity.put;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {

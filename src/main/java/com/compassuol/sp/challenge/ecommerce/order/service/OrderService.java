@@ -4,12 +4,7 @@ import com.compassuol.sp.challenge.ecommerce.order.consumer.ViaCepConsumerFeign;
 import com.compassuol.sp.challenge.ecommerce.order.dto.*;
 import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.OrderMapper;
 import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.ViaCepResponseMapper;
-import com.compassuol.sp.challenge.ecommerce.order.entity.Address;
 import com.compassuol.sp.challenge.ecommerce.order.entity.Order;
-
-import com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus;
-import com.compassuol.sp.challenge.ecommerce.order.enums.PaymentMethod;
-import com.compassuol.sp.challenge.ecommerce.order.exception.OrderStatusNotAuthorizedException;
 import com.compassuol.sp.challenge.ecommerce.order.repository.AddressRepository;
 import com.compassuol.sp.challenge.ecommerce.order.repository.OrderRepository;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
@@ -19,11 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
-
-import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.*;
 
 @Service
 @RequiredArgsConstructor

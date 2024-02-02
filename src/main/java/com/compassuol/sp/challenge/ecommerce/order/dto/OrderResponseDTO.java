@@ -1,7 +1,5 @@
 package com.compassuol.sp.challenge.ecommerce.order.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
