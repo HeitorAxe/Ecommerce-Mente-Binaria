@@ -3,15 +3,18 @@ package com.compassuol.sp.challenge.ecommerce.order.service;
 import com.compassuol.sp.challenge.ecommerce.order.consumer.ViaCepConsumerFeign;
 import com.compassuol.sp.challenge.ecommerce.order.dto.*;
 import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.OrderMapper;
+import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.PageableMapper;
 import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.ViaCepResponseMapper;
 import com.compassuol.sp.challenge.ecommerce.order.entity.Order;
 import com.compassuol.sp.challenge.ecommerce.order.exception.PostalCodeNotFoundException;
 import com.compassuol.sp.challenge.ecommerce.order.repository.AddressRepository;
 import com.compassuol.sp.challenge.ecommerce.order.repository.OrderRepository;
+import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,8 +57,13 @@ public class OrderService {
         return OrderMapper.toDTO(order);
     }
 
-    public List<Order> getAll() {
-        return orderRepository.findAll();
+    public List<OrderResponseDTO> getAll() {
+        return OrderMapper.toListDto(orderRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public PageableDTO getAllAsPage(Pageable pageable) {
+        return PageableMapper.toDto(orderRepository.findAll(pageable));
     }
 
     @Transactional

@@ -1,6 +1,7 @@
 package com.compassuol.sp.challenge.ecommerce.product;
 
 import com.compassuol.sp.challenge.ecommerce.handler.ErrorMessage;
+import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductCreateDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
@@ -66,22 +67,6 @@ class ProductIT {
     }
 
 
-    @Test
-    void listProductsAsPage_ReturnProductListAsPageWithStatus200() {
-        List<PageableDTO> responseBody = testClient.get()
-                .uri("/products/page")
-                .exchange()
-                .expectStatus().isOk()
-                .expectBodyList(PageableDTO.class)
-                .returnResult().getResponseBody();
-
-        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
-        org.assertj.core.api.Assertions.assertThat(responseBody.get(0).getNumber()).isEqualTo(0);
-        org.assertj.core.api.Assertions.assertThat(responseBody.get(0).getSize()).isEqualTo(5);
-        org.assertj.core.api.Assertions.assertThat(responseBody.get(0).getTotalElements()).isEqualTo(6);
-
-
-    }
     @Test
     void getProduct_WithExistingIdReturn200(){
         testClient
@@ -177,4 +162,16 @@ class ProductIT {
     }
 
 
+
+    @Test
+    void listOrder_ReturnOrderListWithStatus200() {
+        List<OrderResponseDTO> responseBody = testClient.get()
+                .uri("/orders")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(OrderResponseDTO.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+    }
 }

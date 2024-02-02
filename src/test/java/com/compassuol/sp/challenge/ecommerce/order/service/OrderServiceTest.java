@@ -5,11 +5,20 @@ import com.compassuol.sp.challenge.ecommerce.order.consumer.ViaCepConsumerFeign;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderDeleteDTO;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
 import com.compassuol.sp.challenge.ecommerce.order.dto.ViaCepResponseDTO;
+import com.compassuol.sp.challenge.ecommerce.order.dto.OrderUpdateDTO;
+import com.compassuol.sp.challenge.ecommerce.order.entity.Order;
 import com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus;
 import com.compassuol.sp.challenge.ecommerce.order.exception.OrderStatusNotAuthorizedException;
 import com.compassuol.sp.challenge.ecommerce.order.repository.AddressRepository;
 import com.compassuol.sp.challenge.ecommerce.order.repository.OrderRepository;
 import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
+
+import com.compassuol.sp.challenge.ecommerce.order.repository.projection.OrderProjection;
+import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
+import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
+import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
+import com.compassuol.sp.challenge.ecommerce.product.exception.ProductNameUniqueViolationException;
+
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +26,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.ui.ModelMap;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.*;
@@ -55,6 +74,7 @@ class OrderServiceTest {
         assertThatThrownBy(() -> orderService.createOrder(VALID_CREATE_ORDER_DTO)).isInstanceOf(EntityNotFoundException.class);
     }
 
+
     @Test
     void getbyId_WithValidDatas_ReturnOrderResponseDto() {
 
@@ -86,9 +106,7 @@ class OrderServiceTest {
                 .hasMessage(String.format("Order %d not found", ORDER_WITH_STATUS_CONFIRMED.getId()));
     }
 
-    @Test
-    void getAll() {
-    }
+
 
     @Test
     void removeProduct_WithValidData_ReturnsOrderWithOrderStatusCanceled() {
@@ -112,4 +130,31 @@ class OrderServiceTest {
     @Test
     void updateOrder() {
     }
+    @Test
+    void updateOrder_WithInvalidId(){
+
+        OrderUpdateDTO updateDto = new OrderUpdateDTO();
+        when(orderRepository.findById(999L)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> orderService.updateOrder(999L, updateDto))
+                .isInstanceOf(EntityNotFoundException.class);
+    }
+
+
+
+    @Test
+    void getAllORDERSAsList_ReturnsAllORDERS(){
+        List<Order> orders = new ArrayList<>() {
+            {
+                add(ORDER);
+            }
+        };
+        when(orderRepository.findAll()).thenReturn(orders);
+        List<OrderResponseDTO> sut = orderService.getAll();
+        assertThat(sut).isNotEmpty();
+        assertThat(sut).hasSize(1);
+
+    }
+
+
 }
+
