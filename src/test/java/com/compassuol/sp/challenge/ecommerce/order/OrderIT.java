@@ -182,14 +182,6 @@ public class OrderIT {
                 .expectBody(ErrorMessage.class)
                 .returnResult().getResponseBody();
 
-    @Test
-    void getOrderById_WithInvalidId_return404(){
-        testClient.method(HttpMethod.GET)
-                .uri("/orders/-5")
-                .exchange()
-                .expectStatus().isBadRequest()
-                .expectBody();
-
     }
 
     @Test
@@ -200,5 +192,14 @@ public class OrderIT {
                 .expectStatus().isEqualTo(405)
                 .expectBody(ErrorMessage.class)
                 .returnResult().getResponseBody();
+    }
+
+    @Test
+    void getOrderById_WithInvalidId_return404() {
+        testClient.method(HttpMethod.GET)
+                .uri("/orders/-5")
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody();
     }
 }
