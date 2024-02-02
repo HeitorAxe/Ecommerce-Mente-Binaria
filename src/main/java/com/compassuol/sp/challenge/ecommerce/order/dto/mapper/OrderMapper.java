@@ -11,16 +11,12 @@ import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
 import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
 import jakarta.persistence.EntityNotFoundException;
-import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static org.apache.commons.io.IOUtils.skip;
 
 public class OrderMapper {
     ProductService productService;

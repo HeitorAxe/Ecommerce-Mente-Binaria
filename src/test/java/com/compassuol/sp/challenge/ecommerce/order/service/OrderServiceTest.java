@@ -1,33 +1,23 @@
 package com.compassuol.sp.challenge.ecommerce.order.service;
 
-import com.compassuol.sp.challenge.ecommerce.common.ProductConstants;
-import com.compassuol.sp.challenge.ecommerce.order.dto.OrderCreateDTO;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderDeleteDTO;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
-import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.OrderMapper;
-import com.compassuol.sp.challenge.ecommerce.order.entity.Order;
 import com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus;
 import com.compassuol.sp.challenge.ecommerce.order.exception.OrderStatusNotAuthorizedException;
 import com.compassuol.sp.challenge.ecommerce.order.repository.OrderRepository;
-import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
-import com.compassuol.sp.challenge.ecommerce.product.exception.ProductNameUniqueViolationException;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
-import org.springframework.ui.ModelMap;
 
 import java.util.Optional;
 
 import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.ORDER_WITH_STATUS_CONFIRMED;
 import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.ORDER_WITH_STATUS_SENT;
-import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.*;
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 

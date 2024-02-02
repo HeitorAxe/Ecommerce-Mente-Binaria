@@ -6,14 +6,12 @@ import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import org.springframework.http.HttpMethod;
-
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.*;
-import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.*;
+import static com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus.CONFIRMED;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

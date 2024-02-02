@@ -18,7 +18,6 @@ public class OrderUpdateDTO {
     List<OrderHasProductDTO> products;
     @Valid
     private AddressDTO address;
-    @NotBlank(message = "Must specify payment method")
     @Pattern(regexp = "CREDIT_CARD|" +
             "BANK_TRANSFER|" +
             "CRYPTOCURRENCY|" +
@@ -27,5 +26,9 @@ public class OrderUpdateDTO {
             "OTHER"
             , message = "Must be a valid payment method: CREDIT_CARD|BANK_TRANSFER|CRYPTOCURRENCY|GIFT_CARD|PIX|OTHER")
     private String paymentMethod;
+    @Pattern(regexp = "CONFIRMED|" +
+            "SENT|" +
+            "CANCELED"
+            ,message = "Must be a valid order status: CONFIRMED|SENT|CANCELED")
     private String orderStatus;
 }

@@ -1,13 +1,11 @@
 package com.compassuol.sp.challenge.ecommerce.order.entity;
 
-import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.OrderMapper;
 import com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus;
 import com.compassuol.sp.challenge.ecommerce.order.enums.PaymentMethod;
 import com.compassuol.sp.challenge.ecommerce.order.exception.OrderStatusNotAuthorizedException;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
