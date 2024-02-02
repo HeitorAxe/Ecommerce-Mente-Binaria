@@ -181,6 +181,7 @@ public class OrderIT {
                 .expectStatus().isNotFound()
                 .expectBody(ErrorMessage.class)
                 .returnResult().getResponseBody();
+    }
 
     }
 
