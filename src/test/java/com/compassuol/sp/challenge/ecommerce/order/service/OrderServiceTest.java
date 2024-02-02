@@ -8,6 +8,8 @@ import com.compassuol.sp.challenge.ecommerce.order.entity.Order;
 import com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus;
 import com.compassuol.sp.challenge.ecommerce.order.exception.OrderStatusNotAuthorizedException;
 import com.compassuol.sp.challenge.ecommerce.order.repository.OrderRepository;
+import com.compassuol.sp.challenge.ecommerce.order.repository.projection.OrderProjection;
+import com.compassuol.sp.challenge.ecommerce.product.dto.PageableDTO;
 import com.compassuol.sp.challenge.ecommerce.product.dto.ProductResponseDTO;
 import com.compassuol.sp.challenge.ecommerce.product.entity.Product;
 import com.compassuol.sp.challenge.ecommerce.product.exception.ProductNameUniqueViolationException;
@@ -19,6 +21,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.ui.ModelMap;
@@ -55,13 +60,6 @@ class OrderServiceTest {
     void createOrder() {
     }
 
-    @Test
-    void getbyId() {
-    }
-
-    @Test
-    void getAll() {
-    }
 
     @Test
     void removeProduct_WithValidData_ReturnsOrderWithOrderStatusCanceled() {
@@ -105,4 +103,22 @@ class OrderServiceTest {
                 .isInstanceOf(EntityNotFoundException.class);
     }
 
+
+
+    @Test
+    void getAllORDERSAsList_ReturnsAllORDERS(){
+        List<Order> orders = new ArrayList<>() {
+            {
+                add(ORDER);
+            }
+        };
+        when(orderRepository.findAll()).thenReturn(orders);
+        List<OrderResponseDTO> sut = orderService.getAll();
+        assertThat(sut).isNotEmpty();
+        assertThat(sut).hasSize(1);
+
+    }
+
+
 }
+

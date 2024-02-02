@@ -70,7 +70,7 @@ public class OrderController {
             })
     @GetMapping
     public ResponseEntity<List<OrderResponseDTO>>getAll(){
-        List<Order> orders = orderService.getAll();
+        List<OrderResponseDTO> orders = orderService.getAll();
         return ResponseEntity.ok(orders);
     }
 

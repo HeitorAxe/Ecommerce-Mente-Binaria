@@ -104,7 +104,6 @@ class OrderControllerTest {
 
 
     }
-
     @Test
     void removeProduct_WithValidData_ReturnsOrderWithOrderStatusCanceled() throws Exception{
         OrderDeleteDTO dto = new OrderDeleteDTO("odiei o produto");

@@ -31,6 +31,7 @@ public class OrderConstants {
     private static Order ORDER_SENT;
     private static Order ORDER_CANCELED;
     private static Product product;
+    public static final Order ORDER = new Order();
 
     private static Address address = new Address(1L, 16, "Em frente a praça", "68990-000", "Tartarugalzinho", "Perpétuo Socorro", "Amapá");
 
