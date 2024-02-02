@@ -1,18 +1,13 @@
 package com.compassuol.sp.challenge.ecommerce.order.controller;
-import com.compassuol.sp.challenge.ecommerce.order.dto.OrderDeleteDTO;
-import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
 import com.compassuol.sp.challenge.ecommerce.common.OrderConstants;
 import com.compassuol.sp.challenge.ecommerce.order.consumer.ViaCepConsumerFeign;
-import com.compassuol.sp.challenge.ecommerce.order.dto.*;
-import com.compassuol.sp.challenge.ecommerce.order.enums.OrderStatus;
+import com.compassuol.sp.challenge.ecommerce.order.dto.OrderDeleteDTO;
+import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
+import com.compassuol.sp.challenge.ecommerce.order.dto.OrderUpdateDTO;
 import com.compassuol.sp.challenge.ecommerce.order.exception.OrderStatusNotAuthorizedException;
 import com.compassuol.sp.challenge.ecommerce.order.repository.AddressRepository;
 import com.compassuol.sp.challenge.ecommerce.order.repository.OrderRepository;
 import com.compassuol.sp.challenge.ecommerce.order.service.OrderService;
-import com.compassuol.sp.challenge.ecommerce.product.controller.ProductController;
-import com.compassuol.sp.challenge.ecommerce.product.repository.ProductRepository;
-import com.compassuol.sp.challenge.ecommerce.product.service.ProductService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.AfterEach;
@@ -27,20 +22,19 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
 import java.util.Optional;
+
 import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.*;
 
 import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.PRODUCT;
 import static org.hamcrest.Matchers.hasSize;
 
 import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.PRODUCT_RESPONSE_DTO;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -91,18 +85,35 @@ class OrderControllerTest {
     }
 
     @Test
-    void listOrder_ReturnsAllOrder() throws Exception{
-        OrderResponseDTO orderResponseDTO= new OrderResponseDTO();
-        List<OrderResponseDTO> orders =new ArrayList<>();
+    void listOrder_ReturnsAllOrder() throws Exception {
+        OrderResponseDTO orderResponseDTO = new OrderResponseDTO();
+        List<OrderResponseDTO> orders = new ArrayList<>();
         orders.add(orderResponseDTO);
         when(orderService.getAll()).thenReturn(orders);
         mockMvc
                 .perform(
                         get("/orders"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$",hasSize(1)));
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
 
+    @Test
+    void getById_WithValidId() throws Exception {
+        OrderResponseDTO sut = orderService.getbyId(ORDER_WITH_STATUS_CONFIRMED.getId());
+        when(orderService.getbyId(1L)).thenReturn(sut);
 
+        mockMvc.perform(
+                get("/orders/1")
+        ).andExpect(status().isOk());
+    }
+
+    @Test
+    void getById_WithInvalidId() throws Exception {
+        when(orderService.getbyId(1L)).thenThrow(EntityNotFoundException.class);
+
+        mockMvc.perform(
+                get("/orders/1")
+        ).andExpect(status().isNotFound());
     }
     @Test
     void removeProduct_WithValidData_ReturnsOrderWithOrderStatusCanceled() throws Exception{
@@ -132,8 +143,8 @@ class OrderControllerTest {
     }
 
     @Test
-   void updateOrder_WithValidData_ReturnsNewOrder() throws Exception {
-        when(orderRepository.findById(1L)).thenReturn(Optional.ofNullable(ORDER_WITH_STATUS_CONFIRMED));
+    void updateOrder_WithValidData_ReturnsNewOrder() throws Exception {
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(ORDER_WITH_STATUS_CONFIRMED));
 
         mockMvc.perform(
                         get("/orders/1")

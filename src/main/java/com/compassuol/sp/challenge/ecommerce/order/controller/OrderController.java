@@ -1,8 +1,8 @@
 package com.compassuol.sp.challenge.ecommerce.order.controller;
 
 import com.compassuol.sp.challenge.ecommerce.handler.ErrorMessage;
-import com.compassuol.sp.challenge.ecommerce.order.dto.*;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderCreateDTO;
+import com.compassuol.sp.challenge.ecommerce.order.dto.OrderDeleteDTO;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderResponseDTO;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderUpdateDTO;
 import com.compassuol.sp.challenge.ecommerce.order.dto.mapper.OrderMapper;
@@ -108,7 +108,7 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK).body(order);
     }
 
-    @Operation(summary = "update order", description = "Customers can update the order",
+    @Operation(summary = "Update order", description = "Customers can update the order",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Resource retrieved successfully",
                             content = @Content(mediaType = "application/json;charset=UTF-8", schema = @Schema(implementation = ProductResponseDTO.class))),
