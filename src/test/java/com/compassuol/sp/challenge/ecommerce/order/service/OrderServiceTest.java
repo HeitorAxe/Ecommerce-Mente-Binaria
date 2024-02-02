@@ -93,7 +93,7 @@ class OrderServiceTest {
         OrderDeleteDTO delete = new OrderDeleteDTO("Não gostei do produto");
         when(orderRepository.findById(ORDER_WITH_STATUS_SENT.getId())).thenReturn(Optional.of(ORDER_WITH_STATUS_SENT));
 
-        assertThatThrownBy(() -> orderService.removeOrder(ORDER_WITH_STATUS_CONFIRMED.getId(), delete)).isInstanceOf(OrderStatusNotAuthorizedException.class);
+        assertThatThrownBy(() -> orderService.removeOrder(ORDER_WITH_STATUS_SENT.getId(), delete)).isInstanceOf(OrderStatusNotAuthorizedException.class);
     }
 
     @Test
