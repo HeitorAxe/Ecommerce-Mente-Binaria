@@ -1,4 +1,5 @@
 package com.compassuol.sp.challenge.ecommerce.order.controller;
+
 import com.compassuol.sp.challenge.ecommerce.common.OrderConstants;
 import com.compassuol.sp.challenge.ecommerce.order.consumer.ViaCepConsumerFeign;
 import com.compassuol.sp.challenge.ecommerce.order.dto.OrderDeleteDTO;
@@ -24,7 +25,6 @@ import java.util.List;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Optional;
-
 import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.*;
 
 import static com.compassuol.sp.challenge.ecommerce.common.ProductConstants.PRODUCT;

@@ -72,14 +72,13 @@ public class OrderService {
         order.cancel(deleteDto.getCancelReason());
         return OrderMapper.toDTO(order);
     }
-
+    @Transactional
     public OrderResponseDTO updateOrder(Long id, OrderUpdateDTO orderDto) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Order not found with id: " + id));
         OrderMapper.updateOrder(order, orderDto, productRepository, addressRepository, viaCepConsumerFeign);
+        order.processValue();
         Order updatedOrder = orderRepository.save(order);
         return OrderMapper.toDTO(updatedOrder);
     }
-
-
 }

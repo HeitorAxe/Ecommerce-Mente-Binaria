@@ -41,8 +41,13 @@ import java.util.Optional;
 import static com.compassuol.sp.challenge.ecommerce.common.OrderConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -77,7 +82,6 @@ class OrderServiceTest {
 
     @Test
     void getbyId_WithValidDatas_ReturnOrderResponseDto() {
-
         when(orderRepository.findById(anyLong())).thenReturn(Optional.of(ORDER_WITH_STATUS_CONFIRMED));
         OrderResponseDTO dto = orderService.getbyId(ORDER_WITH_STATUS_CONFIRMED.getId());
         OrderResponseDTO expectedDto = new OrderResponseDTO();
@@ -88,7 +92,6 @@ class OrderServiceTest {
         expectedDto.setSubTotalValue(dto.getSubTotalValue());
         expectedDto.setProducts(dto.getProducts());
         expectedDto.setCreationDate(dto.getCreationDate());
-
         assertThat(dto).isNotNull();
         assertThat(dto.getProducts()).isEqualTo(expectedDto.getProducts());
         assertThat(dto.getCreationDate()).isEqualTo(expectedDto.getCreationDate());
@@ -128,7 +131,18 @@ class OrderServiceTest {
     }
 
     @Test
-    void updateOrder() {
+    void  updateOrder_WithValidData_ReturnsNewOrder(){
+        OrderUpdateDTO updateDto = new OrderUpdateDTO();
+        updateDto.setPaymentMethod("CREDIT_CARD");
+        updateDto.setOrderStatus(OrderStatus.SENT.toString());
+        Order existingOrder = new Order();
+        when(orderRepository.findById(100L)).thenReturn(Optional.of(existingOrder));
+        when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        OrderResponseDTO updatedOrder = orderService.updateOrder(100L, updateDto);
+        assertNotNull(updatedOrder);
+        assertEquals(updateDto.getPaymentMethod(), updatedOrder.getPaymentMethod());
+        assertEquals(updateDto.getOrderStatus(), updatedOrder.getOrderStatus());
+        assertEquals(updateDto.getAddress(), updatedOrder.getAddress());
     }
     @Test
     void updateOrder_WithInvalidId(){
@@ -138,7 +152,14 @@ class OrderServiceTest {
         assertThatThrownBy(() -> orderService.updateOrder(999L, updateDto))
                 .isInstanceOf(EntityNotFoundException.class);
     }
+    @Test
+    void updateOrder_WithInvalidId(){
 
+        OrderUpdateDTO updateDto = new OrderUpdateDTO();
+        when(orderRepository.findById(999L)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> orderService.updateOrder(999L, updateDto))
+                .isInstanceOf(EntityNotFoundException.class);
+    }
 
 
     @Test
@@ -154,7 +175,6 @@ class OrderServiceTest {
         assertThat(sut).hasSize(1);
 
     }
-
 
 }
 
