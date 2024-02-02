@@ -131,37 +131,6 @@ Recuperar uma lista paginada de produtos.
 }
 ```
 
-### Tratamento de Exceções
-
-A API de Produtos pode gerar diferentes códigos de resposta HTTP em caso de exceções. Aqui estão algumas situações que podem ocorrer:
-
-```json
-{
-  "error": "400 Bad Request",
-  "message": "The request contains invalid data."
-}
-
-{
-  "error": "404 Not Found",
-  "message": "The product with the specified ID was not found."
-}
-
-{
-  "error": "500 Internal Server Error",
-  "message": "An internal server error occurred. Check the logs for more details."
-}
-
-
-```
-
-### Importantes
-```json
-{
-
-"Certifique-se de que a descrição contenha pelo menos 10 caracteres e que o preço seja um valor não negativo."
-
-}
-```
 
 
 ## Endpoints da API de Pedidos
@@ -324,35 +293,142 @@ Atualiza informações de um pedido específico por ID.
 }
 ```
 
+### `GET /orders`
+
+Recupera a lista de pedidos.
+**Exemplo de resposta:**
+
+```json
+{
+        "id": 1,
+        "products": [
+            {
+                "productId": 3,
+                "quantity": 103
+            }
+        ],
+        "address": {
+            "number": 235,
+            "complement": "ap209",
+            "postalCode": "89803108",
+            "city": "Chapecó",
+            "street": "Rua Castro Alves - E",
+            "state": "SC"
+        },
+        "paymentMethod": "BANK_TRANSFER",
+        "orderStatus": "CANCELED",
+        "totalValue": 1150.0,
+        "subTotalValue": 1150.0,
+        "creationDate": "2024-01-31T09:33:47.965624",
+        "cancelationDate": "2024-01-31T21:46:58.186494",
+        "cancelReason": "oke"
+    },
+    {
+        "id": 2,
+        "products": [
+            {
+                "productId": 3,
+                "quantity": 103
+            }
+        ],
+        "address": {
+            "number": 235,
+            "complement": "ap209",
+            "postalCode": "89803108",
+            "city": "Chapecó",
+            "street": "Rua Castro Alves - E",
+            "state": "SC"
+        },
+        "paymentMethod": "BANK_TRANSFER",
+        "orderStatus": "CANCELED",
+        "totalValue": 3360.0,
+        "subTotalValue": 3360.0,
+        "creationDate": "2024-01-31T09:35:16.955584",
+        "cancelationDate": "2024-01-31T21:46:53.474858",
+        "cancelReason": "oke"
+    }
+```
+
 ### `GET /orders/page`
 
 Recupera uma lista paginada de pedidos.
 
-**Corpo da solicitação:**
+**Corpo da solicitação no Swagger:**
 ```json
 {
-  
+  "page": 0,
+  "size": 1,
+  "sort": [
+    "string"
+  ]
 }
+```
+
+**Exemplo de resposta:**
+```json
+    {
+        "id": 1,
+        "products": [
+            {
+                "productId": 3,
+                "quantity": 103
+            }
+        ],
+        "address": {
+            "number": 235,
+            "complement": "ap209",
+            "postalCode": "89803108",
+            "city": "Chapecó",
+            "street": "Rua Castro Alves - E",
+            "state": "SC"
+        },
+        "paymentMethod": "BANK_TRANSFER",
+        "orderStatus": "CANCELED",
+        "totalValue": 1150.0,
+        "subTotalValue": 1150.0,
+        "creationDate": "2024-01-31T09:33:47.965624",
+        "cancelationDate": "2024-01-31T21:46:58.186494",
+        "cancelReason": "oke"
+    }
 ```
 
 ### Tratamento de Exceções
 
-A API de Pedidos pode gerar diferentes códigos de resposta HTTP em caso de exceções. Aqui estão algumas situações que podem ocorrer:
+A API de Produtos e Pedidos podem gerar diferentes códigos de resposta HTTP em caso de exceções. Aqui estão algumas situações que podem ocorrer:
 
 ```json
 {
-  "error": "400 Bad Request",
-  "message": "The request contains invalid data."
+  "path": "/orders/100",
+    "method": "GET",
+    "status": 404,
+    "statusText": "Not Found",
+    "message": "Order 100 not found"
 }
 
 {
-  "error": "404 Not Found",
-  "message": "The order with the specified ID was not found."
+  "path": "/orders/2a",
+    "method": "GET",
+    "status": 400,
+    "statusText": "Bad Request",
+    "message": "Failed to convert value of type 'java.lang.String' to required type 'java.lang.Long'; For input string: \"2a\""
 }
 
 {
-  "error": "500 Internal Server Error",
-  "message": "An internal server error occurred. Check the logs for more details."
+  "path": "/orders",
+    "method": "PUT",
+    "status": 405,
+    "statusText": "Method Not Allowed",
+    "message": "Request method 'PUT' is not supported"
+}
+{
+  "path": "/orders/6",
+    "method": "DELETE",
+    "status": 422,
+    "statusText": "Unprocessable Entity",
+    "message": "Invalid Fields",
+    "details": {
+        "cancelReason": "cancel reason cannot be empty"
+    }
 }
 ```
 
@@ -362,6 +438,7 @@ A API de Pedidos pode gerar diferentes códigos de resposta HTTP em caso de exce
 {
   
 "Certifique-se de que o ID do produto fornecido existe e de que todos os campos estejam preenchidos corretamente."
+"Certifique-se de que a descrição contenha pelo menos 10 caracteres e que o preço seja um valor não negativo."
 }
 ```
 
